@@ -14,15 +14,19 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('cpf_cnpj')->unique();
-            $table->string('phone');
-            $table->string('whatsapp');
+            $table->string('gender');
+            $table->text('address');
+            $table->integer('day_birth');
+            $table->integer('month_birth');
+            $table->integer('year_birth');
+            $table->integer('hour_birth')->nullable();
+            $table->integer('minute_birth')->nullable();    
             $table->string('email')->unique();
-            $table->string('address');
-            $table->string('city');
-            $table->string('state');
-            
+            $table->string('ddi');         
+            $table->string('whatsapp');         
+            $table->enum('status', ['Lead', 'Client'])->default('Lead');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

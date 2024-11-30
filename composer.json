@@ -6,10 +6,16 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "guzzlehttp/guzzle": "^7.2",
+        "dompdf/dompdf": "^3.0",
+        "google/cloud-translate": "^1.20",
+        "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi": "^2.6",
+        "stichoza/google-translate-php": "^5.2",
+        "symfony/dom-crawler": "^7.2",
         "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {

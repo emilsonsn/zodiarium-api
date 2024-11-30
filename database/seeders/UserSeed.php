@@ -18,15 +18,8 @@ class UserSeed extends Seeder
             'email' => 'admin@admin',
         ],
         [
-            'name' => 'Admin',
-            'email' => 'admin@admin',
+            'name' => 'Admin',            
             'password' => Hash::make('admin'),
-            'phone' => '83991236636',
-            'whatsapp' => '83991236636',
-            'cpf_cnpj' => '13754674412',
-            'birth_date' => '2001-12-18',
-            'company_position_id' => 1,
-            'sector_id' => null,
             'is_active' => true,
         ]);
     }

@@ -27,6 +27,10 @@ Route::post('updatePassword', [UserController::class, 'updatePassword']);
 
 Route::get('validateToken', [AuthController::class, 'validateToken']);
 
+Route::prefix('client')->group(function(){
+    Route::post('create', [ClientController::class, 'create']);
+});
+
 Route::middleware('jwt')->group(function(){
 
     Route::middleware(AdminMiddleware::class)->group(function() {
@@ -47,7 +51,6 @@ Route::middleware('jwt')->group(function(){
 
     Route::prefix('client')->group(function(){
         Route::get('search', [ClientController::class, 'search']);
-        Route::post('create', [ClientController::class, 'create']);
         Route::patch('{id}', [ClientController::class, 'update']);
         Route::delete('{id}', [ClientController::class, 'delete']);
     });

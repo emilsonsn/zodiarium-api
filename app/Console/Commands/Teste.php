@@ -23,41 +23,42 @@ class Teste extends Command
 
     public function handle()
     {
-        $data = [
-            "full_name" => "Emilson de Souza Nascimento",
-            "day" => 18,
-            "month" => 12,
-            "year" => 2001,
-            "hour" => 14,
-            "min" => 30,
-            "sec" => 15,
-            "gender" => "male",
-            "place" => "São Paulo, Brasil",
-            "lat" => -23.5505,
-            "lon" => -46.6333,
-            "tzone" => -3.0,
-            "company_name" => "Minha Empresa",
-            "company_url" => "https://minhaempresa.com.br",
-            "company_email" => "contato@minhaempresa.com.br",
-            "company_mobile" => "5511912345678",
-            "company_bio" => "Empresa dedicada ao desenvolvimento de soluções personalizadas para clientes em diversas áreas.",
-            "logo_url" => "https://www.imagenspng.com.br/wp-content/uploads/2019/03/baby-shark-png-02-600x600.png",
-            "footer_text" => "Copyright © 2024 Minha Empresa",
-            "lan" => "en",
-            "report_code" => "FINANCIAL-REPORT",
-            "theme" => "010"
-        ];
+        // $data = [
+        //     "full_name" => "Emilson de Souza Nascimento",
+        //     "day" => 18,
+        //     "month" => 12,
+        //     "year" => 2001,
+        //     "hour" => 14,
+        //     "min" => 30,
+        //     "sec" => 15,
+        //     "gender" => "male",
+        //     "place" => "São Paulo, Brasil",
+        //     "lat" => -23.5505,
+        //     "lon" => -46.6333,
+        //     "tzone" => -3.0,
+        //     "company_name" => "Minha Empresa",
+        //     "company_url" => "https://minhaempresa.com.br",
+        //     "company_email" => "contato@minhaempresa.com.br",
+        //     "company_mobile" => "5511912345678",
+        //     "company_bio" => "Empresa dedicada ao desenvolvimento de soluções personalizadas para clientes em diversas áreas.",
+        //     "logo_url" => "https://www.imagenspng.com.br/wp-content/uploads/2019/03/baby-shark-png-02-600x600.png",
+        //     "footer_text" => "Copyright © 2024 Minha Empresa",
+        //     "lan" => "en",
+        //     "report_code" => "FINANCIAL-REPORT",
+        //     "theme" => "010"
+        // ];
 
-        $response = $this->getFinancialReport($data);
-        if ($response['success'] !== 1) {
-            $this->error('Erro ao gerar o relatório');
-            return;
-        }
+        // $response = $this->getFinancialReport($data);
+        // if ($response['success'] !== 1) {
+        //     $this->error('Erro ao gerar o relatório');
+        //     return;
+        // }
     
         try {
-            $reportUrl = $response['data']['report_url'];
+            // $reportUrl = $response['data']['report_url'];            
 
-            $htmlPath = $this->callPythonScript($reportUrl);
+            // $htmlPath = $this->callPythonScript($reportUrl);
+            $htmlPath = "/home/emilsonsn/desktop/Emilson/Projetos/10 - Outubro/zodiarium/zodiarium-api/storage/app/public/pages/page_1732991362.html";
 
             $translatedHtmlPath = $this->translateHtmlTextAndCreateFileTranslated($htmlPath);
     
@@ -84,44 +85,68 @@ class Teste extends Command
     private function translateHtmlTextAndCreateFileTranslated(string $filePath): string
     {
         $html = file_get_contents($filePath);
-    
+        
         if (!$html) {
             throw new \Exception('Erro ao ler o arquivo HTML.');
         }
-    
-        $crawler = new Crawler($html);
-    
-        $translator = new \Stichoza\GoogleTranslate\GoogleTranslate('pt'); // Tradução para português
-    
-        // Iterar pelos nós do HTML
-        $crawler->filter('*')->each(function (Crawler $node) use ($translator) {
-            // Traduz apenas nós com texto e ignora tags vazias ou sem conteúdo
-            if ($node->getNode(0) && trim($node->text()) !== '') {
-                $text = $node->getNode(0)->nodeValue;
-    
-                // Escapa caracteres especiais como "&"
-                $text = str_replace('&', 'E', $text);
-                // $text = htmlspecialchars($text, ENT_QUOTES | ENT_HTML5);
-    
-                if (mb_strlen($text) > 5000) { // Limite aproximado para a API do Google
-                    $chunks = str_split($text, 5000); // Divide o texto em partes menores
-                    $translatedText = implode(' ', array_map(fn($chunk) => $translator->translate($chunk), $chunks));
-                } else {
-                    $translatedText = $translator->translate($text);
-                }
-    
-                // Decodifica novamente o texto traduzido e mantém o conteúdo no HTML
-                $node->getNode(0)->nodeValue = htmlspecialchars_decode($translatedText, ENT_QUOTES | ENT_HTML5);
+
+        $preservedValues = [];
+        $protectedHtml = preg_replace_callback(
+            '/<([^>]+)>/',
+            function ($matches) use (&$preservedValues) {
+                return preg_replace_callback(
+                    '/(class|id|src|href|alt|title|styles)="([^"]*)"/i',
+                    function ($attributeMatches) use (&$preservedValues) {
+                        if (strpos($attributeMatches[2], 'data:image/svg+xml;base64,') === 0) {
+                            $key = 'PRESERVED_' . count($preservedValues);
+                            $preservedValues[$key] = $attributeMatches[2];
+                            return $attributeMatches[1] . '="' . $key . '"';
+                        }
+                        // Protege outros valores
+                        return $attributeMatches[1] . '="' . base64_encode($attributeMatches[2]) . '"';
+                    },
+                    $matches[0]
+                );
+            },
+            $html
+        );
+        
+        $translator = new \Stichoza\GoogleTranslate\GoogleTranslate('pt');
+        
+        if (mb_strlen($protectedHtml) > 5000) {
+            $chunks = str_split($protectedHtml, 5000);
+            $translatedChunks = [];
+            foreach ($chunks as $chunk) {
+                $translatedChunks[] = $translator->translate($chunk);
             }
-        });
-    
-        // Mantém a estrutura original e apenas substitui os textos traduzidos
-        $translatedHtml = $crawler->outerHtml();
-    
+            $translatedHtml = implode('', $translatedChunks);
+        } else {
+            $translatedHtml = $translator->translate($protectedHtml);
+        }
+        
+        // Restaurar os valores protegidos dos atributos
+        $finalHtml = preg_replace_callback(
+            '/(class|id|src|href|alt|title|styles)="([^"]*)"/i',
+            function ($attributeMatches) use (&$preservedValues) {
+                $decodedValue = base64_decode($attributeMatches[2], true);
+                if ($decodedValue !== false) {
+                    return $attributeMatches[1] . '="' . $decodedValue . '"';
+                }
+                // Restaurar valores preservados
+                if (array_key_exists($attributeMatches[2], $preservedValues)) {
+                    return $attributeMatches[1] . '="' . $preservedValues[$attributeMatches[2]] . '"';
+                }
+                return $attributeMatches[0];
+            },
+            $translatedHtml
+        );
+
+        $finalHtml = str_replace('terceiro', 'o', $finalHtml);
+        $finalHtml = str_replace('fade', '', $finalHtml);
+            
         $newFilePath = str_replace('.html', '_translated.html', $filePath);
-        file_put_contents($newFilePath, $translatedHtml);
-    
+        file_put_contents($newFilePath, $finalHtml);
+        
         return $newFilePath;
     }
-    
 }

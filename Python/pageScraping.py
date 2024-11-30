@@ -32,7 +32,7 @@ try:
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     my_tab_content = soup.select_one('#myTabContent')
 
-    final_html = f"<!DOCTYPE html>\n<html>{custom_head}<body>{my_tab_content.prettify()}</body></html>"
+    final_html = f"<html>{custom_head}<body>{my_tab_content.prettify()}</body></html>"
 
     filename = f"page_{int(time.time())}.html"
     output_dir = os.path.join("storage", "app", "public", "pages")

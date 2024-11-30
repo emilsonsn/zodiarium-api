@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 
@@ -49,5 +50,10 @@ Route::middleware('jwt')->group(function(){
         Route::post('create', [ClientController::class, 'create']);
         Route::patch('{id}', [ClientController::class, 'update']);
         Route::delete('{id}', [ClientController::class, 'delete']);
+    });
+
+    Route::prefix('setting')->group(function(){
+        Route::get('/', [SettingController::class, 'search']);        
+        Route::patch('/', [SettingController::class, 'update']);        
     });
 });

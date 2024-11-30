@@ -66,12 +66,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
-    public function sector(){
-        return $this->belongsTo(Sector::class);
-    }
-
-    public function companyPosition(){
-        return $this->belongsTo(CompanyPosition::class);
-    }
 }

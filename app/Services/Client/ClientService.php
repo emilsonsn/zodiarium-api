@@ -27,7 +27,8 @@ class ClientService
             }
 
             if($request->filled('status')){
-                $clients->where('status', $request->status);
+                $status = explode(',' ,$request->status);
+                $clients->whereIn('status', $status);
             }
 
             $clients = $clients->paginate($perPage);

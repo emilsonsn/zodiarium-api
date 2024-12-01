@@ -111,6 +111,23 @@ class ClientService
         }
     }
 
+    public function getClientZodiacSing($request)
+    {
+        try {
+            $day_birth = $request->day_birth;
+            $month_birth = $request->month_birth;
+            
+            $data = [];
+
+            $data['zodiacSign'] = $this->getZodiacSign($day_birth, $month_birth);
+            $data['zodiacSignDetail'] = $this->getZodiacDetails($data['zodiacSign']);
+
+            return ['status' => true, 'data' => $data];
+        } catch (Exception $error) {
+            return ['status' => false, 'error' => $error->getMessage(), 'statusCode' => 400];
+        }
+    }
+
     public function update($request, $user_id)
     {
         try {

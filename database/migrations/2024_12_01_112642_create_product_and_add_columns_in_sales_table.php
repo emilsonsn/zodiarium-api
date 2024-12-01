@@ -27,7 +27,6 @@ return new class extends Migration
             $table->enum('status', ['Pending', 'Rejected', 'Finished'])->after('external_id')->default('Pending');
             $table->unsignedBigInteger('product_id')->nullable()->after('client_id');
             $table->foreign('product_id')->references('id')->on('products');
-            $table->softDeletes();
         });
     }
 

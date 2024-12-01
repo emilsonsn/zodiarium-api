@@ -19,6 +19,13 @@ class ClientController extends Controller
         return $result;
     }
 
+    public function getClientZodiacSing(Request $request){
+        $result = $this->clientService->getClientZodiacSing($request);
+
+        if($result['status']) $result['message'] = "Signo consultado com sucesso";
+        return $this->response($result);
+    }
+
     public function create(Request $request){
         $result = $this->clientService->create($request);
 

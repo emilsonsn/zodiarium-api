@@ -15,11 +15,12 @@ driver = webdriver.Chrome(service=service, options=options)
 
 custom_head = """
 <head>
-    <link rel="stylesheet" href="bootstrap.min.css">
-    <link rel="stylesheet" href="bootstrap-icons.css">
-    <link rel="stylesheet" href="custom-style.css">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="pdfpagewestern_style.css">
+    <link rel="stylesheet" href="assets/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/custom-style.css">
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/pdfpagewestern_style.css">
+    <script src="assets/print_action.js"></script>
 </head>
 """
 

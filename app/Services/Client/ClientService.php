@@ -195,27 +195,28 @@ class ClientService
             ['name' => 'Escorpião', 'start' => '10-23', 'end' => '11-21'],
             ['name' => 'Sagitário', 'start' => '11-22', 'end' => '12-21'],
         ];
-
+    
         foreach ($zodiacSigns as $zodiac) {
-            $startDate = strtotime($zodiac['start']);
-            $endDate = strtotime($zodiac['end']);
-            $currentDate = strtotime("$month-$day");
-
-            // Caso o signo seja entre dezembro e janeiro
-            if ($zodiac['start'] === '12-22' && $month === 1) {
-                $startDate = strtotime('12-22 last year');
-            } elseif ($zodiac['end'] === '01-19' && $month === 12) {
-                $endDate = strtotime('01-19 next year');
+            // Criação das datas com base no ano atual
+            $year = date('Y');
+            $startDate = strtotime("$year-{$zodiac['start']}");
+            $endDate = strtotime("$year-{$zodiac['end']}");
+            $currentDate = strtotime("$year-$month-$day");
+    
+            // Ajuste para signos que cruzam anos
+            if ($endDate < $startDate) {
+                // Adiciona 1 ano ao fim do período
+                $endDate = strtotime(($year + 1) . '-' . $zodiac['end']);
             }
-
+    
             if ($currentDate >= $startDate && $currentDate <= $endDate) {
                 return $zodiac['name'];
             }
         }
-
-        throw new Exception('Data inválida para calcular o signo');
+    
+        return null;
     }
-
+    
     private function getZodiacDetails($signo)
     {
         $signos = [

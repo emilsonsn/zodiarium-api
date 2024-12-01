@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Sale extends Model
+class Product extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -14,20 +14,17 @@ class Sale extends Model
     const UPDATED_AT = 'updated_at';
     const DELETED_AT = 'deleted_at';
 
-    public $table = 'sales';
+    public $table = 'products';
 
     public $fillable = [
-        'external_id',
-        'client_id',
-        'status',
-        'product_id',
+        'title',
+        'image',
+        'amount',
+        'is_active',
+        'reports_array',
     ];
 
-    public function client(){
-        return $this->belongsTo(Client::class);
-    }
-
-    public function product(){
-        return $this->belongsTo(Product::class);
+    public function sales(){
+        return $this->hasMany(Sale::class);
     }
 }

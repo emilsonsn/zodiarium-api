@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('external_id')->nullable();
             $table->unsignedBigInteger('client_id');
             $table->timestamps();
-
+            $table->softDeletes();
+            
             $table->foreign('client_id')->references('id')->on('clients');
         });
     }

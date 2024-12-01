@@ -15,20 +15,31 @@ class ClientService
     {
         try {
             $perPage = $request->input('take', 10);
-            $search_term = $request->search_term;
 
             $clients = Client::orderBy('id', 'desc');
 
             if ($request->filled('search_term')) {
-                $clients->where('name', 'LIKE', "%{$search_term}%")
-                    ->orWhere('email', 'LIKE', "%{$search_term}%")
-                    ->orWhere('whatsapp', 'LIKE', "%{$search_term}%")
-                    ->orWhere('ddi', 'LIKE', "%{$search_term}%");
+                $clients->where('name', 'LIKE', "%{$request->search_term}%")
+                    ->orWhere('email', 'LIKE', "%{$request->search_term}%")
+                    ->orWhere('whatsapp', 'LIKE', "%{$request->search_term}%")
+                    ->orWhere('ddi', 'LIKE', "%{$request->search_term}%");
             }
 
             if($request->filled('status')){
                 $status = explode(',' ,$request->status);
                 $clients->whereIn('status', $status);
+            }
+
+            if($request->filled('date_from') && $request->filled('date_to')){
+                if($request->date_from === $request->date_to){
+                    $clients->whereDate('date_from', $request->date_from);
+                }else{
+                    $clients->whereBetween('date_from', [$request->date_from, $request->date_to]);
+                }
+            }elseif($request->filled('date_from')){
+                $clients->whereDate('date_from', '>' ,$request->date_from);
+            }elseif($request->filled('date_to')){
+                $clients->whereDate('date_from', '<' ,$request->date_from);
             }
 
             $clients = $clients->paginate($perPage);

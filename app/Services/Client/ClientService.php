@@ -61,7 +61,11 @@ class ClientService
 
             if ($validator->fails()) throw new Exception($validator->errors(), 400);
 
-            $client = Client::create($validator->validated());
+            $data = $validator->validated();
+
+            $client = Client::updateOrCreate([
+                'email' => $data['email'],
+            ],$data);
 
             $data = [
                 "full_name" => $client->name,

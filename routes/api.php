@@ -32,13 +32,13 @@ Route::prefix('client')->group(function(){
     Route::post('create', [ClientController::class, 'create']);
 });
 
+Route::post('logout', [AuthController::class, 'logout']);
+
 Route::middleware('jwt')->group(function(){
 
     Route::middleware(AdminMiddleware::class)->group(function() {
         // Middleware do admin
     });
-
-    Route::post('logout', [AuthController::class, 'logout']);
 
     Route::prefix('user')->group(function(){
         Route::get('all', [UserController::class, 'all']);

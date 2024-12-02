@@ -21,10 +21,14 @@ class Product extends Model
         'image',
         'amount',
         'is_active',
-        'reports_array',
+        'type',
     ];
 
     public function sales(){
         return $this->hasMany(Sale::class);
+    }
+
+    public function getImageAttribute($value){
+        return isset($value) ? asset("storage/images/$value") : '';
     }
 }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -49,6 +50,13 @@ Route::middleware('jwt')->group(function(){
         Route::post('create', [UserController::class, 'create']);
         Route::patch('{id}', [UserController::class, 'update']);
         Route::post('block/{id}', [UserController::class, 'userBlock']);
+    });
+
+    Route::prefix('product')->group(function(){
+        Route::get('search', [ProductController::class, 'search']);
+        Route::post('create', [ProductController::class, 'create']);
+        Route::patch('{id}', [ProductController::class, 'update']);
+        Route::delete('{id}', [ProductController::class, 'delete']);
     });
 
     Route::prefix('sale')->group(function(){

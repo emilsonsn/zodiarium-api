@@ -195,92 +195,106 @@ class ClientService
             ['name' => 'Escorpião', 'start' => '10-23', 'end' => '11-21'],
             ['name' => 'Sagitário', 'start' => '11-22', 'end' => '12-21'],
         ];
-    
+
+        $year = date('Y');
+        $currentDate = strtotime("$year-$month-$day");
+
         foreach ($zodiacSigns as $zodiac) {
-            // Criação das datas com base no ano atual
-            $year = date('Y');
             $startDate = strtotime("$year-{$zodiac['start']}");
             $endDate = strtotime("$year-{$zodiac['end']}");
-            $currentDate = strtotime("$year-$month-$day");
-    
-            // Ajuste para signos que cruzam anos
+
             if ($endDate < $startDate) {
-                // Adiciona 1 ano ao fim do período
-                $endDate = strtotime(($year + 1) . '-' . $zodiac['end']);
+                if ($currentDate >= strtotime("{$year}-01-01") && $currentDate <= $endDate) {
+                    $startDate = strtotime(($year - 1) . "-{$zodiac['start']}");
+                } else {
+                    $endDate = strtotime(($year + 1) . "-{$zodiac['end']}");
+                }
             }
-    
+
             if ($currentDate >= $startDate && $currentDate <= $endDate) {
                 return $zodiac['name'];
             }
         }
-    
+
         return null;
     }
+
     
     private function getZodiacDetails($signo)
     {
         $signos = [
             'Áries' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/47/47290.png',
-                'descricao' => 'Áries, o primeiro signo do zodíaco, é regido por Marte, o planeta da ação e da guerra. Representa energia, iniciativa e liderança, sendo conhecido por sua coragem e determinação. Os arianos são impulsivos e cheios de entusiasmo, sempre prontos para enfrentar novos desafios e explorar territórios desconhecidos. Essa energia vibrante muitas vezes os leva a assumir papéis de liderança, pois possuem uma natureza pioneira e não têm medo de correr riscos. Apesar de sua força, podem ser considerados impacientes e precisam aprender a canalizar sua energia de maneira produtiva. Relacionamentos com Áries são intensos e apaixonados, mas podem ser tumultuados devido à sua impetuosidade.'
+                'icon' => 'https://cloudfront-us-east-1.images.arcpublishing.com/estadao/PFMW5VPZTRBGRCF6PGJSPHN2DU.png',
+                'short_description' => 'Cheio de coragem e energia, Áries é um líder nato que enfrenta desafios com entusiasmo e determinação.',
+                'description' => 'Grandes desafios surgirão, testando sua coragem e capacidade de tomar decisões rápidas. Oportunidades de crescimento aparecerão em momentos inesperados, exigindo que você esteja preparado para agir com determinação. Relacionamentos importantes poderão se fortalecer através de atitudes espontâneas, mas será essencial manter o equilíbrio emocional para evitar conflitos desnecessários. No âmbito profissional, caminhos promissores abrirão portas para conquistas significativas, especialmente se você confiar em sua intuição e iniciativa. Prepare-se para um período de realizações marcantes, mas também de aprendizado.',
             ],
             'Touro' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/47/47414.png',
-                'descricao' => 'Touro, regido por Vênus, o planeta da beleza e do amor, é um signo de terra profundamente enraizado na estabilidade, praticidade e sensualidade. Taurinos valorizam segurança, conforto material e experiências sensoriais. Eles são conhecidos por sua lealdade e determinação, e uma vez que se comprometem com algo, trabalham diligentemente para alcançar seus objetivos. Embora possam ser teimosos, essa característica também reflete sua incrível resiliência. Touro é também um signo associado ao prazer — eles apreciam boa comida, arte e ambientes tranquilos. Nos relacionamentos, são carinhosos e leais, mas podem ser possessivos e protetores.'
+                'icon' => 'https://cloud-statics.estadao.com.br/emais/horoscopo/touro.webp',
+                'short_description' => 'Prático e confiável, Touro valoriza estabilidade e aprecia prazeres simples.',
+                'description' => 'Um período de estabilidade trará segurança e conforto, permitindo que você foque em construir bases sólidas para seus objetivos futuros. Novas oportunidades financeiras poderão surgir, recompensando sua paciência e dedicação. Relacionamentos próximos serão fortalecidos, e momentos agradáveis com pessoas queridas ajudarão a recarregar suas energias. No entanto, será importante evitar a teimosia em situações de conflito, buscando sempre o equilíbrio. O futuro promete prazeres simples e conquistas duradouras.',
             ],
             'Gêmeos' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/47/47271.png',
-                'descricao' => 'Gêmeos, regido por Mercúrio, é um signo de ar associado à adaptabilidade, comunicação e inteligência. Os geminianos possuem uma mente curiosa e estão sempre em busca de novos conhecimentos e experiências. São excelentes comunicadores, capazes de se expressar de forma envolvente e cativante. No entanto, essa natureza multifacetada pode fazê-los parecer inconstantes ou superficiais. Gêmeos tem uma incrível capacidade de se adaptar a mudanças, tornando-os companheiros sociais encantadores. Em relacionamentos, valorizam a troca intelectual e a liberdade pessoal, sendo parceiros dinâmicos e versáteis.'
+                'icon' => 'https://cloud-statics.estadao.com.br/emais/horoscopo/gemeos.webp',
+                'short_description' => 'Comunicativo e curioso, Gêmeos é movido pela busca por conhecimento e novas experiências.',
+                'description' => 'O futuro reserva um período de intensa comunicação e aprendizado. Novas ideias e conexões surgirão, permitindo que você expanda seus horizontes e explore caminhos antes inexplorados. Sua curiosidade será uma força motriz, mas será essencial manter o foco para evitar dispersões. Relacionamentos sociais trarão oportunidades valiosas, e viagens ou mudanças de ambiente poderão marcar um novo capítulo em sua jornada. Prepare-se para desafios que testarão sua adaptabilidade, mas que também trarão crescimento pessoal.',
             ],
             'Câncer' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/47/47412.png',
-                'descricao' => 'Câncer, regido pela Lua, é um signo de água que simboliza emoção, intuição e cuidado. Cancerianos são profundamente ligados às suas emoções e possuem uma natureza protetora. Eles se destacam por sua capacidade de criar ambientes acolhedores e seguros para aqueles que amam. No entanto, podem ser muito sensíveis e propensos a mudanças de humor devido à sua conexão com a Lua. Valorizam a família e as tradições, e muitas vezes encontram alegria em cuidar dos outros. Em relacionamentos, são leais e dedicados, mas precisam de parceiros que entendam sua natureza emocional e intuitiva.'
+                'icon' => 'https://cloud-statics.estadao.com.br/emais/horoscopo/cancer.webp',
+                'short_description' => 'Sensível e protetor, Câncer valoriza relações próximas e cria ambientes acolhedores.',
+                'description' => 'Um período de mudanças emocionais profundas permitirá que você se conecte ainda mais com aqueles que ama. O futuro trará oportunidades para fortalecer laços familiares e criar um ambiente seguro e acolhedor. No entanto, será importante equilibrar suas emoções para evitar sobrecargas. Novos projetos pessoais ou profissionais podem surgir, desafiando sua intuição e resiliência. Confie em sua capacidade de adaptação e esteja aberto a mudanças que podem levar a grandes transformações.',
             ],
             'Leão' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/47/47337.png',
-                'descricao' => 'Leão, regido pelo Sol, é um signo de fogo associado à criatividade, paixão e generosidade. Leoninos são líderes naturais, irradiando confiança e entusiasmo em tudo o que fazem. Sua personalidade magnética atrai pessoas, e eles prosperam em situações que lhes permitem brilhar. No entanto, podem ser percebidos como arrogantes ou egocêntricos, especialmente se sentirem que não estão recebendo a atenção que desejam. Apesar disso, Leão é incrivelmente generoso e leal com aqueles que ama. Em relacionamentos, são apaixonados e românticos, buscando parceiros que valorizem sua energia e criatividade.'
+                'icon' => 'https://cloud-statics.estadao.com.br/emais/horoscopo/leao.webp',
+                'short_description' => 'Carismático e confiante, Leão irradia energia e paixão em tudo o que faz.',
+                'description' => 'Um período de brilho pessoal está por vir, trazendo reconhecimento e oportunidades para expressar sua criatividade. Novas responsabilidades podem surgir, exigindo que você demonstre sua capacidade de liderança. Relacionamentos próximos se beneficiarão de sua generosidade e lealdade, mas será importante evitar atitudes impulsivas ou egoístas. No âmbito profissional, o futuro promete conquistas que destacam seu talento e paixão, consolidando seu papel como uma figura inspiradora.',
             ],
             'Virgem' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/47/47148.png',
-                'descricao' => 'Virgem, regido por Mercúrio, é um signo de terra caracterizado pela análise, perfeccionismo e serviço. Virginianos têm uma habilidade excepcional de perceber detalhes que passam despercebidos por outros. São trabalhadores dedicados, sempre buscando aprimorar-se e contribuir de forma prática. Apesar de sua natureza crítica, isso reflete seu desejo de alcançar a excelência. Nos relacionamentos, são leais e prestativos, mas podem ser reservados emocionalmente. Virgem aprecia a ordem e se sente mais confortável em ambientes estruturados, onde pode exercer sua mente analítica.'
+                'icon' => 'https://cloud-statics.estadao.com.br/emais/horoscopo/virgem.webp',
+                'short_description' => 'Meticuloso e analítico, Virgem busca sempre a excelência com sua abordagem prática.',
+                'description' => 'Projetos que exigem análise detalhada e organização estão no horizonte, destacando suas habilidades práticas. O futuro trará oportunidades para implementar melhorias em sua rotina, tanto no âmbito pessoal quanto profissional. Relacionamentos se fortalecerão à medida que você demonstrar apoio e lealdade aos que estão ao seu redor. Apesar de sua natureza crítica, será importante reconhecer suas conquistas e se permitir momentos de descanso. Uma fase de estabilidade e crescimento o aguarda.',
             ],
             'Libra' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/47/47117.png',
-                'descricao' => 'Libra, regido por Vênus, é um signo de ar que representa equilíbrio, harmonia e diplomacia. Librianos buscam justiça e valorizam os relacionamentos interpessoais. Possuem um forte senso estético e frequentemente são atraídos por arte, beleza e cultura. Embora possam ser indecisos, isso geralmente se deve ao desejo de considerar todos os lados de uma situação. Em relacionamentos, são românticos e encantadores, sempre buscando criar conexões significativas. Libra também é conhecido por sua habilidade de mediar conflitos, tornando-os excelentes negociadores.'
+                'icon' => 'https://cloud-statics.estadao.com.br/emais/horoscopo/libra.webp',
+                'short_description' => 'Elegante e diplomático, Libra busca equilíbrio e harmonia em todas as áreas da vida.',
+                'description' => 'O futuro promete um período de equilíbrio e harmonia, onde sua habilidade diplomática será essencial para resolver conflitos e construir conexões significativas. Novas parcerias, tanto pessoais quanto profissionais, trarão crescimento mútuo e novas oportunidades. No entanto, será importante tomar decisões firmes para evitar indecisões que possam atrasar seu progresso. Um período de paz e realização está à sua espera, valorizando a beleza e a justiça em todas as áreas de sua vida.',
             ],
             'Escorpião' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/47/47128.png',
-                'descricao' => 'Escorpião, regido por Plutão e Marte, é um signo de água associado à intensidade, transformação e mistério. Escorpianos são profundos e muitas vezes magnetizam as pessoas com sua aura enigmática. Possuem uma determinação inabalável e são incrivelmente leais. Apesar disso, podem ser possessivos e ciumentos, especialmente em relacionamentos. Escorpião tem uma capacidade única de se regenerar após desafios, tornando-os incrivelmente resilientes. Eles buscam a verdade em tudo e não têm medo de explorar as profundezas emocionais e espirituais.'
+                'icon' => 'https://cloud-statics.estadao.com.br/emais/horoscopo/escorpiao.webp',
+                'short_description' => 'Intenso e misterioso, Escorpião é movido pela paixão e busca por profundidade emocional.',
+                'description' => 'Grandes transformações estão por vir, desafiando você a se aprofundar ainda mais em suas emoções e desejos. Relacionamentos intensos podem trazer mudanças inesperadas, mas também lições valiosas sobre confiança e lealdade. No âmbito profissional, sua determinação abrirá portas para projetos ambiciosos que exigem foco e resiliência. Prepare-se para enfrentar desafios que o fortalecerão, permitindo que você renasça ainda mais forte e determinado.',
             ],
             'Sagitário' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/41/41478.png',
-                'descricao' => 'Sagitário, regido por Júpiter, é um signo de fogo que simboliza aventura, liberdade e otimismo. Sagitarianos são exploradores naturais, sempre em busca de conhecimento e experiências que ampliem seus horizontes. Eles possuem uma natureza filosófica e adoram compartilhar suas ideias com os outros. No entanto, podem ser impacientes ou excessivamente otimistas. Em relacionamentos, buscam parceiros que compartilhem seu amor pela liberdade e pela descoberta. Sagitário é conhecido por seu entusiasmo contagiante e capacidade de inspirar os outros.'
+                'icon' => 'https://cloud-statics.estadao.com.br/emais/horoscopo/sagitario.webp',
+                'short_description' => 'Aventureiro e otimista, Sagitário é sempre guiado por sua sede de liberdade e aprendizado.',
+                'description' => 'Um período de aventuras e descobertas o aguarda, trazendo novas perspectivas e oportunidades para explorar o desconhecido. Viagens ou mudanças de cenário podem abrir portas para crescimento pessoal e aprendizado. No entanto, será importante equilibrar sua sede de liberdade com compromissos importantes. Relacionamentos se beneficiarão de sua energia positiva e entusiasmo, mas certifique-se de dedicar tempo para construir laços mais profundos. O futuro promete expansão e realização em diversas áreas.',
             ],
             'Capricórnio' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/1885/1885325.png',
-                'descricao' => 'Capricórnio, regido por Saturno, é um signo de terra associado à ambição, disciplina e responsabilidade. Capricornianos são altamente determinados e trabalham incansavelmente para alcançar seus objetivos. Embora possam ser percebidos como sérios, possuem um senso de humor seco e uma natureza leal. Em relacionamentos, são parceiros confiáveis e comprometidos, mas podem ser cautelosos em demonstrar emoções. Capricórnio valoriza a tradição e a estabilidade, buscando construir uma vida sólida e segura para si e para os outros.'
+                'icon' => 'https://cloud-statics.estadao.com.br/emais/horoscopo/capricornio.webp',
+                'short_description' => 'Ambicioso e disciplinado, Capricórnio trabalha incansavelmente para alcançar seus objetivos.',
+                'description' => 'O futuro reserva um período de progresso constante, onde sua dedicação e esforço serão recompensados. Novas responsabilidades surgirão, permitindo que você demonstre suas habilidades de liderança e organização. Relacionamentos próximos se fortalecerão à medida que você compartilha suas ambições com os que ama. Apesar do foco no trabalho, será importante encontrar tempo para relaxar e aproveitar os frutos de seu esforço. Um período de crescimento sólido e realização está a caminho.',
             ],
             'Aquário' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/47/47246.png',
-                'descricao' => 'Aquário, regido por Urano, é um signo de ar que representa inovação, originalidade e independência. Aquarianos são visionários e frequentemente pensam fora da caixa, buscando soluções criativas para problemas. Valorizam a liberdade e a individualidade, o que pode torná-los às vezes distantes emocionalmente. Em relacionamentos, apreciam conexões intelectuais e companheiros que compartilhem sua visão de mundo. Aquário é também um signo humanitário, comprometido em fazer do mundo um lugar melhor.'
+                'icon' => 'https://cloud-statics.estadao.com.br/emais/horoscopo/aquario.webp',
+                'short_description' => 'Inovador e original, Aquário adora explorar ideias novas e pensar fora da caixa.',
+                'description' => 'O futuro promete oportunidades para implementar suas ideias inovadoras e causar impacto positivo em sua comunidade. Novos projetos ou colaborações intelectuais trarão crescimento pessoal e profissional. Relacionamentos se beneficiarão de sua autenticidade e visão de futuro, mas será importante equilibrar sua independência com a dedicação aos outros. Prepare-se para um período de criatividade e realização, onde sua originalidade será uma grande vantagem.',
             ],
             'Peixes' => [
-                'icone' => 'https://cdn-icons-png.flaticon.com/512/47/47160.png',
-                'descricao' => 'Peixes, regido por Netuno, é um signo de água caracterizado pela empatia, sensibilidade e imaginação. Piscianos são sonhadores naturais, muitas vezes conectados ao mundo espiritual. Possuem uma intuição aguçada e são profundamente compassivos, sempre dispostos a ajudar os outros. No entanto, podem se perder em suas emoções e precisam de momentos de solidão para recarregar suas energias. Em relacionamentos, são românticos e dedicados, mas podem ser excessivamente idealistas. Peixes é um signo que valoriza a conexão emocional acima de tudo.'
+                'icon' => 'https://cloud-statics.estadao.com.br/emais/horoscopo/peixes.webp',
+                'short_description' => 'Sonhador e empático, Peixes vive em um mundo de emoções e imaginação.',
+                'description' => 'Um período de introspecção e conexão espiritual o aguarda, trazendo clareza sobre seus desejos e aspirações. Relacionamentos se aprofundarão, permitindo que você expresse sua sensibilidade de forma autêntica. No âmbito profissional, sua criatividade será essencial para resolver problemas e abrir novas portas. No entanto, será importante encontrar equilíbrio entre suas emoções e a realidade prática. Um futuro cheio de significado e realização está reservado para você.',
             ],
-        ];        
-
+        ];
+    
         $signo = ucfirst(strtolower($signo));
-
+    
         if (array_key_exists($signo, $signos)) {
             return $signos[$signo];
         } else {
             return [
-                'icone' => 'https://image.flaticon.com/icons/png/512/616/616450.png',
-                'descricao' => 'Signo não encontrado. Por favor, verifique a data de nascimento fornecido.'
+                'icon' => 'https://image.flaticon.com/icons/png/512/616/616450.png',
+                'short_description' => 'Signo não encontrado. Por favor, verifique a data de nascimento fornecida.',
+                'description' => 'O futuro está cheio de possibilidades, mas é importante refletir sobre suas escolhas e criar um caminho alinhado com seus objetivos e desejos.',
             ];
         }
-    }
-
-
+    }    
 }

@@ -27,4 +27,8 @@ class Setting extends Model
         'api_key',
         'bearer_token',
     ];
+
+    public function getLogoAttribute($value){
+        return isset($value) ? asset("storage/settings/$value") : '';
+    }
 }

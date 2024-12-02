@@ -16,8 +16,9 @@ class ProductService
     {
         try {
             $perPage = $request->input('take', 10);
+            $order = $request->input('order', 'DESC');
 
-            $products = Product::orderBy('id', 'desc');
+            $products = Product::orderBy('id', $order);
 
             if ($request->filled('search_term')) {
                 $products->where('title', 'LIKE', "%{$request->search_term}%");
@@ -30,6 +31,36 @@ class ProductService
             $products = $products->paginate($perPage);
 
             return $products;
+        } catch (Exception $error) {
+            return ['status' => false, 'error' => $error->getMessage(), 'statusCode' => 400];
+        }
+    }
+
+    public function show()
+    {
+        try {
+            $mainReport = Product::where('type', 'Main')
+                ->where('is_active', true)
+                ->first();
+
+            $bundleReports = Product::where('type', 'Bundle')
+                ->where('is_active', true)
+                ->get();
+            $upsellReports = Product::where('type', 'Upsell')
+                ->where('is_active', true)
+                ->get();
+
+            $data = [
+                'main' => $mainReport,
+                'upsell' => $upsellReports,
+                'bundle' => [
+                    'sum' => $bundleReports->count() ? $bundleReports->sum('amount') + $mainReport->amount : null,
+                    'count' => $bundleReports->count() + 1,
+                    'reports' => $bundleReports
+                ],
+            ];
+
+            return [ 'status' => true, 'data' => $data ];
         } catch (Exception $error) {
             return ['status' => false, 'error' => $error->getMessage(), 'statusCode' => 400];
         }
@@ -58,7 +89,7 @@ class ProductService
                 throw new Exception("Imagem é obrigatória", 400);
             }
 
-            if($request->report == 'Main' && Product::where('report', 'Main')->count()){
+            if($request->type == 'Main' && Product::where('type', 'Main')->where('is_active', true)->count()){
                 throw new Exception("Já existe um relatório setado como principal", 400);
             }
 
@@ -84,7 +115,7 @@ class ProductService
     public function update($request, $id)
     {
         try {
-            $request['is_active'] = $request['is_active'] == 'null' ? true : $request['is_active'];
+            $request['is_active'] = $request['is_active'] == 'false' ? false : true;
 
             $rules = [
                 'title' => ['required', 'string', 'max:255'],
@@ -100,11 +131,15 @@ class ProductService
 
             if ($validator->fails()) throw new Exception($validator->errors());
 
-            if($request->report == 'Main' && Product::where('report', 'Main')->count()){
+            $productToUpdate = Product::find($id);
+
+            $mainReports = Product::where('type', 'Main')->where('is_active', true)
+                ->where('id', '!=', $productToUpdate->id)
+                ->count();
+
+            if($request->type == 'Main' && $mainReports){
                 throw new Exception("Já existe um relatório setado como principal", 400);
             }
-
-            $productToUpdate = Product::find($id);
 
             if (!$productToUpdate) throw new Exception('Produto não encontrado');
 

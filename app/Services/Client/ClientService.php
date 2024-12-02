@@ -2,10 +2,12 @@
 
 namespace App\Services\Client;
 
+use App\Exports\ClientsExport;
 use App\Models\Client;
 use App\Traits\DivineAPITrait;
 use Exception;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClientService
 {
@@ -49,6 +51,26 @@ class ClientService
             return ['status' => false, 'error' => $error->getMessage(), 'statusCode' => 400];
         }
     }
+
+    public function export($request)
+    {
+        try {
+            $status = $request->input('status');
+            if (!isset($status)) {
+                throw new Exception('Filtro status é obrigatório');
+            }
+    
+            // Substituir caracteres inválidos
+            $status = str_replace(['/', '\\'], '-', $status);
+    
+            $fileName = "clients_{$status}.xlsx";
+    
+            return Excel::download(new ClientsExport($status), $fileName);
+        } catch (Exception $error) {
+            return response()->json(['status' => false, 'error' => $error->getMessage()], 400);
+        }
+    }
+    
 
     public function create($request)
     {

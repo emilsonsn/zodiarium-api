@@ -19,6 +19,13 @@ class ProductController extends Controller
         return $result;
     }
 
+    public function show(){
+        $result = $this->productService->show();
+
+        if($result['status']) $result['message'] = "Produtos à venda";
+        return $this->response($result);
+    }
+
     public function create(Request $request){
         $result = $this->productService->create($request);
 

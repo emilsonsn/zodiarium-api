@@ -34,6 +34,10 @@ Route::prefix('client')->group(function(){
     Route::get('get-client-zodiac-sing', [ClientController::class, 'getClientZodiacSing']);
 });
 
+Route::prefix('product')->group(function(){
+    Route::get('show', [ProductController::class, 'show']);
+});
+
 Route::post('logout', [AuthController::class, 'logout']);
 
 Route::middleware('jwt')->group(function(){
@@ -69,6 +73,7 @@ Route::middleware('jwt')->group(function(){
 
     Route::prefix('client')->group(function(){
         Route::get('search', [ClientController::class, 'search']);
+        Route::get('export', [ClientController::class, 'export']);
         Route::patch('{id}', [ClientController::class, 'update']);
         Route::delete('{id}', [ClientController::class, 'delete']);
     });

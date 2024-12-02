@@ -58,6 +58,10 @@ class ProductService
                 throw new Exception("Imagem é obrigatória", 400);
             }
 
+            if($request->report == 'Main' && Product::where('report', 'Main')->count()){
+                throw new Exception("Já existe um relatório setado como principal", 400);
+            }
+
             $validatedData = $validator->validated();
 
             if(isset($request->images)){
@@ -95,6 +99,10 @@ class ProductService
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator->fails()) throw new Exception($validator->errors());
+
+            if($request->report == 'Main' && Product::where('report', 'Main')->count()){
+                throw new Exception("Já existe um relatório setado como principal", 400);
+            }
 
             $productToUpdate = Product::find($id);
 

@@ -20,10 +20,7 @@ class ClientController extends Controller
     }
 
     public function export(Request $request){
-
         return $this->clientService->export($request);
-
-        // return response()->download(storage_path("app/public/{$result['filePath']}"));
     }
 
     public function getClientZodiacSing(Request $request){

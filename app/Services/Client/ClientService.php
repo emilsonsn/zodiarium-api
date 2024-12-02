@@ -34,14 +34,14 @@ class ClientService
 
             if($request->filled('date_from') && $request->filled('date_to')){
                 if($request->date_from === $request->date_to){
-                    $clients->whereDate('date_from', $request->date_from);
+                    $clients->whereDate('created_at', $request->date_from);
                 }else{
-                    $clients->whereBetween('date_from', [$request->date_from, $request->date_to]);
+                    $clients->whereBetween('created_at', [$request->date_from, $request->date_to]);
                 }
             }elseif($request->filled('date_from')){
-                $clients->whereDate('date_from', '>' ,$request->date_from);
+                $clients->whereDate('created_at', '>' ,$request->date_from);
             }elseif($request->filled('date_to')){
-                $clients->whereDate('date_from', '<' ,$request->date_from);
+                $clients->whereDate('created_at', '<' ,$request->date_from);
             }
 
             $clients = $clients->paginate($perPage);

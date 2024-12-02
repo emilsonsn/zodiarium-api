@@ -26,7 +26,7 @@ class Product extends Model
     ];
 
     public function sales(){
-        return $this->hasMany(Sale::class);
+        return $this->hasMany(SaleProduct::class);
     }
 
     public function getImageAttribute($value){

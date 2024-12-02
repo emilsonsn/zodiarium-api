@@ -17,17 +17,16 @@ class Sale extends Model
     public $table = 'sales';
 
     public $fillable = [
-        'external_id',
         'client_id',
         'status',
-        'product_id',
     ];
 
     public function client(){
         return $this->belongsTo(Client::class);
     }
 
-    public function product(){
-        return $this->belongsTo(Product::class);
+
+    public function products(){
+        return $this->hasMany(SaleProduct::class);
     }
 }

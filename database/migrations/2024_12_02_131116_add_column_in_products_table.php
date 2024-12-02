@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('reports_array');
+            $table->string('reports_array')->after('is_active')->change();
+            $table->renameColumn('reports_array', 'report');
             $table->enum('type', ['Main', 'Bundle', 'Upsell'])->after('is_active')->default('Upsell');
         });
     }
@@ -24,7 +25,8 @@ return new class extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             $table->dropColumn('type');
-            $table->json('reports_array')->afte('is_active');
+            $table->json('report')->after('is_active')->change();
+            $table->renameColumn('report', 'reports_array');
         });
     }
 };

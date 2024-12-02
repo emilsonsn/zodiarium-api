@@ -38,13 +38,15 @@ class ProductService
     public function create($request)
     {
         try {
-            $request['is_active'] = $request['is_active'] == 'null' ? true : $request['is_active'];
+            $request['is_active'] = $request['is_active'] == 'false' ? false : true;
 
             $rules = [
                 'title' => ['required', 'string', 'max:255'],
-                'image' => ['required', 'file', 'image', 'max:1024'],
+                'image' => ['nullable', 'file', 'image', 'max:1024'],
+                'images' => ['nullable', 'array'],
                 'amount' => ['required', 'numeric'],
                 'is_active' => ['nullable', 'boolean'],
+                'report' => ['required', 'string', 'max:255'],
                 'type' => ['required', 'string', 'in:Main,Bundle,Upsell'],
             ];
 
@@ -52,11 +54,19 @@ class ProductService
 
             if ($validator->fails()) throw new Exception($validator->errors(), 400);
 
+            if(!isset($request->images) && !isset($request->image)){
+                throw new Exception("Imagem é obrigatória", 400);
+            }
+
             $validatedData = $validator->validated();
 
-            if ($request->hasFile('image')) {                
-                $logoPath = $request->file('logo')->store('public/images');
-                $validatedData['logo'] = str_replace('public/image/', '', $logoPath);
+            if(isset($request->images)){
+                $image = $request->images[0];
+                $imagePath = $image->store('images');
+                $validatedData['image'] = str_replace('images/', '', $imagePath);
+            }else{
+                $imagePath = $request->file('image')->store('images');
+                $validatedData['image'] = str_replace('images/', '', $imagePath);
             }
 
             $product = Product::create($validatedData);
@@ -71,12 +81,14 @@ class ProductService
     {
         try {
             $request['is_active'] = $request['is_active'] == 'null' ? true : $request['is_active'];
-            
+
             $rules = [
                 'title' => ['required', 'string', 'max:255'],
-                'image' => ['required', 'file', 'image', 'max:1024'],
+                'image' => ['nullable', 'file', 'image', 'max:1024'],
+                'images' => ['nullable', 'array'],
                 'amount' => ['required', 'numeric'],
                 'is_active' => ['nullable', 'boolean'],
+                'report' => ['required', 'string', 'max:255'],
                 'type' => ['required', 'string', 'in:Main,Bundle,Upsell'],
             ];
 
@@ -90,13 +102,19 @@ class ProductService
 
             $validatedData = $validator->validated();
 
-            if ($request->hasFile('logo')) {
-                if ($productToUpdate->image && Storage::exists($productToUpdate->image)) {
-                    Storage::delete($productToUpdate->logo);
+            if(isset($request->images)){
+                $image = $request->images[0];                
+                if ($productToUpdate->image) {
+                    $storagePath = explode('/storage', $productToUpdate->image);
+                    if(Storage::exists($storagePath[1])){
+                        Storage::delete($productToUpdate->image);
+                    }
                 }
-
-                $logoPath = $request->file('logo')->store('public/images');
-                $validatedData['logo'] = str_replace('public/images/', '', $logoPath);
+                $imagePath = $image->store('images');
+                $validatedData['image'] = str_replace('images/', '', $imagePath);
+            }else if($request->hasFile('image')){
+                $imagePath = $request->file('image')->store('images');
+                $validatedData['image'] = str_replace('images/', '', $imagePath);
             }
 
             $productToUpdate->update($validatedData);
@@ -124,3 +142,4 @@ class ProductService
     }
 
 }
+

@@ -56,8 +56,8 @@ class SettingService
                     Storage::delete('public/settings/' . $settingToUpdate->logo);
                 }
 
-                $logoPath = $request->file('logo')->store('public/settings');
-                $validatedData['logo'] = str_replace('public/settings/', '', $logoPath);
+                $logoPath = $request->file('logo')->store('settings');
+                $validatedData['logo'] = str_replace('settings/', '', $logoPath);
             }
 
             $settingToUpdate->update($validatedData);

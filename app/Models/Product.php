@@ -21,6 +21,7 @@ class Product extends Model
         'image',
         'amount',
         'is_active',
+        'report',
         'type',
     ];
 

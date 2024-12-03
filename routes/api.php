@@ -67,8 +67,6 @@ Route::middleware('jwt')->group(function(){
         Route::get('search', [SaleController::class, 'search']);
         Route::get('{id}', [SaleController::class, 'getById']);
         Route::post('create', [SaleController::class, 'create']);
-        Route::patch('{id}', [SaleController::class, 'update']);
-        Route::delete('{id}', [SaleController::class, 'delete']);
     });
 
     Route::prefix('client')->group(function(){

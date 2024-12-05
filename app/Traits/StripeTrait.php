@@ -3,13 +3,11 @@
 namespace App\Traits;
 
 use Exception;
-use GuzzleHttp\Client;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
 
 trait StripeTrait
 {
-    protected $clientKey;
     protected $privateKey;
 
     public function prepareStripeApiCredencials()
@@ -52,12 +50,20 @@ trait StripeTrait
 
     public function getCheckoutSession($sessionId)
     {
-        // payment_status: Status do pagamento (ex.: paid, unpaid, no_payment_required).
-        
-        Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
+        $this->prepareStripeApiCredencials();
+
+        Stripe::setApiKey($this->privateKey);
 
         $session = Session::retrieve($sessionId);
 
-        return response()->json($session);
+        $contentBody =  response()
+            ->json($session)
+            ->content();
+        
+        $response = json_decode($contentBody);
+
+        if(!isset($response->id)) throw new Exception('Erro na transação');
+
+        return $response;
     }
 }

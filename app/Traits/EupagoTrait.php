@@ -73,19 +73,23 @@ trait EupagoTrait
         ];
     }
 
-    public function checkPaymentStatus($reference, $entity)
+    public function checkPaymentStatus($reference, $entity = null)
     {        
+        $this->prepareEupagoApiCredencials();
+        $payload = [
+            'chave'      => $this->apiKey,
+            'referencia' => $reference,            
+        ];
+
+        if($entity) $payload['entidade'] = $entity;
+
         $response = $this->client->post('/clientes/rest_api/multibanco/info', [
-            'form_params' => [
-                'chave'      => $this->apiKey,
-                'referencia' => $reference,
-                'entidade' => $entity,
-            ],
+            'form_params' => $payload
         ]);
 
         $result = json_decode($response->getBody(), true);
 
-        if(!isset($body['sucesso']) || !$body['sucesso']){
+        if(!isset($result['sucesso']) || !$result['sucesso']){
             throw new Exception($result['resposta'], 400);
         }
 

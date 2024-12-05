@@ -2,8 +2,10 @@
 
 namespace App\Services\Client;
 
+use App\Enums\BrevoListEnum;
 use App\Exports\ClientsExport;
 use App\Models\Client;
+use App\Traits\BrevoTrait;
 use App\Traits\DivineAPITrait;
 use Exception;
 use Illuminate\Support\Facades\Validator;
@@ -11,7 +13,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ClientService
 {
-    use DivineAPITrait;
+    use DivineAPITrait, BrevoTrait;
 
     public function search($request)
     {
@@ -126,6 +128,8 @@ class ClientService
 
             $client['zodiacSign'] = $this->getZodiacSign($client->day_birth, $client->month_birth);
             $client['zodiacSignDetail'] = $this->getZodiacDetails($client['zodiacSign']);
+
+            $this->addContactInList(BrevoListEnum::Lead->value, $client);
 
             return ['status' => true, 'data' => $client];
         } catch (Exception $error) {

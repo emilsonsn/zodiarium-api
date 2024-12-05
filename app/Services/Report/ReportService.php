@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Services\User;
+namespace App\Services\Report;
 
 use App\Models\Client;
 use App\Models\Setting;
 use Exception;
 use App\Traits\DivineAPITrait;
 
-class UserService
+class ReportService
 {
     use DivineAPITrait;
 
@@ -37,13 +37,16 @@ class UserService
                 "logo_url" => $setting->logo,
                 "footer_text" => $setting->footer_text,
                 "lan" => "en",
-                // "report_code" => $report,
-                "theme" => $setting->theme,
+                "theme" => '010',
             ];
             $generatedReports = [];
 
             foreach($reports as $report){
                 $data['report_code'] = $report;
+                // Retirar
+                $data['report_code'] = 'CAREER-REPORT';
+                $data['logo_url'] = 'https://www.imagenspng.com.br/wp-content/uploads/2019/03/baby-shark-png-02-600x600.png';
+                //
                 $response = $this->getFinancialReport($data);
 
                 if ($response['success'] !== 1) throw new Exception('Erro na API ao gerar relatório');                
@@ -135,7 +138,9 @@ class UserService
 
         $finalHtml = str_replace('terceiro', 'o', $finalHtml);
         $finalHtml = str_replace('fade', '', $finalHtml);
-            
+        $finalHtml = str_replace('folha de estilo', 'stylesheet', $finalHtml);
+        $finalHtml = str_replace('<cabeça>', '<head>', $finalHtml);
+        
         $newFilePath = str_replace('.html', '_translated.html', $filePath);
         file_put_contents($newFilePath, $finalHtml);
         

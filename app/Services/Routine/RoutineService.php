@@ -2,18 +2,30 @@
 
 namespace App\Services\Routine;
 
+use App\Enums\BrevoListEnum;
 use App\Enums\PaymentStatus;
 use App\Enums\SaleStatus;
+use App\Mail\ClientReportMail;
 use App\Models\Payment;
+use App\Models\Product;
 use App\Models\Sale;
+use App\Services\Report\ReportService;
+use App\Traits\BrevoTrait;
 use App\Traits\EupagoTrait;
 use App\Traits\StripeTrait;
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class RoutineService
 {
-    use EupagoTrait, StripeTrait;
+    use EupagoTrait, StripeTrait, BrevoTrait;
+
+    private $reportService; 
+
+    public function __construct(ReportService $reportService){
+        $this->reportService = $reportService;
+    }
 
     public function checkPayments(){
         $payments = Payment::where('status', PaymentStatus::Pending->value)
@@ -24,14 +36,13 @@ class RoutineService
                 switch($payment->origin_api){
                     case 'Eupago':
                         $response = $this->checkPaymentStatus($payment->reference, $payment->entity);
-                        if (($response['estado_referencia'] ?? null) === 'pago') {
+                        if (($response['estado_referencia'] ?? null) === 'paga') {
                             $this->successfulPaymentProcess($payment);
                         }
                         break;
                     case 'Stripe':
                         $response = $this->getCheckoutSession($payment->reference);
-                        // payment_status: Status do pagamento (ex.: paid, unpaid, no_payment_required).
-                        if (($response->payment_status ?? null) !== 'paid'){
+                        if (($response->payment_status ?? null) === 'paid'){
                             $this->successfulPaymentProcess($payment);
                         }
                         break;
@@ -46,15 +57,43 @@ class RoutineService
     }
 
     public function successfulPaymentProcess(Payment $payment){
-        $payment->update([
-            'status' => PaymentStatus::Successful->value
-        ]);
+        // $payment->update([
+        //     'status' => PaymentStatus::Successful->value
+        // ]);
 
-        Sale::find($payment->sale_id)->update([
+        $sale = Sale::find($payment->sale_id)->update([
             'status' => SaleStatus::Finished->value
         ]);
 
         $customer = $payment->sale->client;
-        // Jogar na lista de compradores da brevo
+
+        $report_ids = collect($payment->sale->products)
+            ->map(fn($saleProduct) => $saleProduct->product->report)
+            ->toArray();
+
+        $this->addContactInList(BrevoListEnum::Client->value, $customer);
+
+        $reports = $this->reportService->generateReport($customer['id'], $report_ids);
+
+        if(!isset($reports['status']) || !$reports['status']){
+            Log::error("Erro ao gerar relatórios para o cliente {$customer->name}");
+            return;
+        }
+
+        $reports = array_map(function($report) {
+            return str_replace('/app/public', '', $report);
+        }, $reports['data']);
+
+        $reportsData = [];        
+        foreach($payment->sale->products as $indice => $saleProduct){
+            $product = Product::find($saleProduct->product_id)->first();
+            $reportsData[] = [
+                'image' => $product->image,
+                'title' => $product->title,
+                'url'   => $reports[$indice]
+            ];
+        }
+
+        Mail::to($customer->email)->send(new ClientReportMail($customer->name, $reportsData));
     }
 }

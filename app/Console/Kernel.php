@@ -12,8 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        $schedule->command('app:check-payments')
+            ->everyTwoMinutes()
+            ->withoutOverlapping(5)
+            ->onOneServer();
     }
-
+    
     /**
      * Register the commands for the application.
      */

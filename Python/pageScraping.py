@@ -28,7 +28,7 @@ try:
     url = sys.argv[1]
     driver.get(url)
      
-    sleep(8)
+    sleep(12)
 
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     my_tab_content = soup.select_one('#myTabContent')

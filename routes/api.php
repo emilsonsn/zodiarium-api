@@ -38,6 +38,11 @@ Route::prefix('product')->group(function(){
     Route::get('show', [ProductController::class, 'show']);
 });
 
+Route::prefix('sale')->group(function(){
+    Route::get('search', [SaleController::class, 'search']);
+    Route::post('create', [SaleController::class, 'create']);
+});
+
 Route::post('logout', [AuthController::class, 'logout']);
 
 Route::middleware('jwt')->group(function(){
@@ -64,9 +69,7 @@ Route::middleware('jwt')->group(function(){
     });
 
     Route::prefix('sale')->group(function(){
-        Route::get('search', [SaleController::class, 'search']);
         Route::get('{id}', [SaleController::class, 'getById']);
-        Route::post('create', [SaleController::class, 'create']);
     });
 
     Route::prefix('client')->group(function(){

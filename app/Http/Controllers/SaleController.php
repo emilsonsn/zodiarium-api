@@ -32,20 +32,6 @@ class SaleController extends Controller
         return $this->response($result);
     }
 
-    public function update(Request $request, $id){
-        $result = $this->saleService->update($request, $id);
-
-        if($result['status']) $result['message'] = "Compra atualizada com sucesso";
-        return $this->response($result);
-    }
-
-    public function delete($id){
-        $result = $this->saleService->delete($id);
-
-        if($result['status']) $result['message'] = "Compra deletada com sucesso";
-        return $this->response($result);
-    }
-
     private function response($result){
         return response()->json([
             'status' => $result['status'],

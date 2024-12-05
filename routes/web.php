@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\IndexController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::prefix('stripe')->group(function(){
+    Route::get('success', [IndexController::class, 'success']);
+    Route::get('cancel', [IndexController::class, 'cancel']);
 });

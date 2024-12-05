@@ -18,10 +18,10 @@ class Payment extends Model
     public $fillable = [
         'sale_id',
         'status',
-        'identifier',
         'reference',
         'entity',
-        'transaction_id',
+        'origin_api',
+        'alias',
         'value',
     ];
 

@@ -8,6 +8,7 @@ use App\Models\Payment;
 use App\Models\Sale;
 use App\Models\SaleProduct;
 use App\Traits\EupagoTrait;
+use App\Traits\StripeTrait;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +16,7 @@ use Illuminate\Support\Str;
 
 class SaleService
 {
-    use EupagoTrait;
+    use EupagoTrait, StripeTrait;
 
     public function search($request)
     {
@@ -65,7 +66,7 @@ class SaleService
         try {
             $rules = [
                 'client_id' => ['required', 'integer'],
-                'payment_method' => ['required', 'string', 'in:Multibanco,Mbway'],
+                'payment_method' => ['required', 'string', 'in:Multibanco,Mbway,Stripe'],
                 'country_code' => ['nullable', 'string'],
                 'phone' => ['nullable', 'string'],
                 'status' => ['nullable', 'string', 'in:Pending,Rejected,Finished'],
@@ -82,16 +83,14 @@ class SaleService
 
             $sale = Sale::create($data);
 
-            $products = explode(',' , $request->products);
+            $products = explode(',' , (string)$request->products);
             $saleProducts = [];
             foreach($products as $product_id){
                 $saleProducts[] = SaleProduct::create([
                     'sale_id' => $sale->id,
                     'product_id' => $product_id
                 ]);
-            }
-
-            DB::commit();
+            }            
 
             $payment_method = $request->payment_method;
             $uuid = Str::uuid()->toString();
@@ -104,7 +103,20 @@ class SaleService
                     return $saleProduct->product->amount;
                 });
 
-            $sale['payment'] = $this->createPayment($uuid, $payment_method, $totalAmount, $country_code, $phone);
+            $response = $this->createPayment($uuid, $payment_method, $totalAmount, $country_code, $phone);
+
+            $payment = Payment::create([
+                'sale_id' => $sale->id,
+                'entity' => $response['entidade'] ?? null,
+                'reference' => $response['referencia'] ?? $response['id'] ?? null,
+                'value' => $response['valor'] ?? null,
+                'alias' => $response['alias'] ?? $response['transaction_id'] ?? null,
+                'origin_api' => isset($response['referencia']) ? 'Eupago' : 'Stripe'
+            ]);
+
+            DB::commit();
+
+            $sale['payment'] = $payment;
 
             return ['status' => true, 'data' => $sale];
         } catch (Exception $error) {
@@ -147,7 +159,10 @@ class SaleService
                 return $this->createMultibancoReference($uuid, $totalAmount);
                 break;
             case PaymentMethod::Mbway->value:
-                return $this->createMbWayPayment($uuid, $totalAmount, $phoneNumber, $countryCode);
+                return $this->createMbWayPayment($uuid, $totalAmount, $countryCode, $phoneNumber);
+                break;
+            case PaymentMethod::Stripe->value:
+                return $this->createStripePayment($totalAmount);
                 break;
         }
     }

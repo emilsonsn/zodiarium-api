@@ -22,6 +22,7 @@ trait EupagoTrait
 
     public function createMultibancoReference($id, $amount, $additionalParams = [])
     {
+
         $this->prepareEupagoApiCredencials();
         $params = array_merge([
             'chave' => $this->apiKey,
@@ -35,7 +36,7 @@ trait EupagoTrait
 
         $result = json_decode($response->getBody(), true);
 
-        if(!isset($body['sucesso']) || !$body['sucesso']){
+        if(!isset($result['sucesso']) || !$result['sucesso']){
             throw new Exception($result['resposta'], 400);
         }
 
@@ -45,31 +46,31 @@ trait EupagoTrait
     public function createMbWayPayment($id, $amount, $countryCode = '+351', $phoneNumber)
     {
         $this->prepareEupagoApiCredencials();
-        $response = $this->client->post('/api/v1.02/mbway/create', [
-            'headers' => [
-                'ApiKey' => $this->apiKey,
-            ],
-            'form_params' => [
-                'payment' => [
-                    'identifier' => $id,
-                    'amount' => [
-                        'value' => $amount,
-                        'currency' => 'EUR'
-                    ],
-                    'customerPhone' => $phoneNumber,
-                    'countryCode' => $countryCode
-                ]                
+
+        $response = $this->client->post('/clientes/rest_api/mbway/create', [
+            'json' => [
+                'valor' => $amount,
+                'id' => $id,
+                'alias' => $phoneNumber,
+                'chave' => $this->apiKey,
             ],
         ]);
 
         $result = json_decode($response->getBody(), true);
 
-        if(!isset($body['sucesso']) || !$body['sucesso']){
+        if (!isset($result['sucesso']) || !$result['sucesso']) {
             throw new Exception($result['resposta'], 400);
         }
 
         return $result;
-
+        return  [
+            'success' => true,
+            'estado' => 0,
+            'response' => '234234',
+            'referencia' => '1234234',
+            'valor' => 12,
+            'alias' => '123',
+        ];
     }
 
     public function checkPaymentStatus($reference, $entity)

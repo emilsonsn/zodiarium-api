@@ -1,0 +1,163 @@
+/* Estilos gerais */
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+header{
+    padding: 20px;
+    background: #202260;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+img{
+    width: 300px;
+}
+
+section{
+    box-shadow: 0 4px 10px rgb(161, 161, 161);
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+/* Container principal */
+.privacy-policy {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Títulos */
+.privacy-policy h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.privacy-policy h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #6c757d;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.privacy-policy h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #343a40;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* Parágrafos */
+.privacy-policy p {
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+/* Listas */
+.privacy-policy ul {
+    margin-left: 20px;
+    list-style-type: disc;
+}
+
+.privacy-policy ul li {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+/* Links */
+.privacy-policy a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.privacy-policy a:hover {
+    text-decoration: underline;
+}
+
+/* Botões */
+button {
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Endereços */
+address {
+    font-style: normal;
+    background-color: #f8f9fa;
+    border-left: 4px solid #007bff;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+/* Índice */
+.privacy-policy ol {
+    margin-left: 20px;
+    list-style-type: decimal;
+}
+
+.privacy-policy ol li {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+/* Última atualização */
+.text-center {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.text-primary {
+    color: #007bff;
+}
+
+.text-secondary {
+    color: #6c757d;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .privacy-policy {
+        padding: 20px;
+    }
+
+    .privacy-policy h1 {
+        font-size: 2rem;
+    }
+
+    .privacy-policy h2 {
+        font-size: 1.5rem;
+    }
+
+    .privacy-policy h3 {
+        font-size: 1.2rem;
+    }
+
+    .privacy-policy p, .privacy-policy ul li {
+        font-size: 0.9rem;
+    }
+}

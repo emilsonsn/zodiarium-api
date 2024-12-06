@@ -22,6 +22,11 @@ Route::get('/report', function () {
     return view('emails.client-reports');
 });
 
+Route::get('/privacy-policies', function () {
+    return view('privacy_policies');
+});
+
+
 Route::prefix('stripe')->group(function(){
     Route::get('success', [IndexController::class, 'success']);
     Route::get('cancel', [IndexController::class, 'cancel']);

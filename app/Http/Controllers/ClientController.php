@@ -30,6 +30,13 @@ class ClientController extends Controller
         return $this->response($result);
     }
 
+    public function getCitys(Request $request){
+        $result = $this->clientService->getCitys($request);
+
+        if($result['status']) $result['message'] = "Cidades consultadas com sucesso";
+        return $this->response($result);
+    }
+
     public function create(Request $request){
         $result = $this->clientService->create($request);
 

@@ -32,6 +32,7 @@ Route::get('validateToken', [AuthController::class, 'validateToken']);
 Route::prefix('client')->group(function(){
     Route::post('create', [ClientController::class, 'create']);
     Route::get('get-client-zodiac-sing', [ClientController::class, 'getClientZodiacSing']);
+    Route::get('citys', [ClientController::class, 'getCitys']);
 });
 
 Route::prefix('product')->group(function(){

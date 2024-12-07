@@ -4,6 +4,7 @@ namespace App\Services\Client;
 
 use App\Enums\BrevoListEnum;
 use App\Exports\ClientsExport;
+use App\Models\City;
 use App\Models\Client;
 use App\Traits\BrevoTrait;
 use App\Traits\DivineAPITrait;
@@ -132,6 +133,20 @@ class ClientService
             $this->addContactInList(BrevoListEnum::Lead->value, $client);
 
             return ['status' => true, 'data' => $client];
+        } catch (Exception $error) {
+            return ['status' => false, 'error' => $error->getMessage(), 'statusCode' => 400];
+        }
+    }
+
+    public function getCitys($request)
+    {
+        try {
+            $search_term = $request->search_term;            
+            
+            $citys = City::where('name', 'LIKE', "%$search_term%")
+                ->get();
+
+            return ['status' => true, 'data' => $citys];
         } catch (Exception $error) {
             return ['status' => false, 'error' => $error->getMessage(), 'statusCode' => 400];
         }

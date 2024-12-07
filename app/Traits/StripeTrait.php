@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\GlobalSettingsHelper;
 use Exception;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
@@ -12,7 +13,7 @@ trait StripeTrait
 
     public function prepareStripeApiCredencials()
     {
-        $this->privateKey = env('STRIPE_PRIVATE_KEY');
+        $this->privateKey = GlobalSettingsHelper::get('stripe_private_key');
     }
 
     public function createStripePayment($amount)

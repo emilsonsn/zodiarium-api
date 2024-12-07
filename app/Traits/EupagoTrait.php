@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\GlobalSettingsHelper;
 use Exception;
 use GuzzleHttp\Client;
 
@@ -13,11 +14,11 @@ trait EupagoTrait
     public function prepareEupagoApiCredencials()
     {
         $this->client = new Client([
-            'base_uri' => env('EUPAGO_BASE_URL'),
+            'base_uri' => 'https://clientes.eupago.pt',
             'timeout'  => 10.0,
         ]);
 
-        $this->apiKey = env('EUPAGO_API_KEY');
+        $this->apiKey = GlobalSettingsHelper::get('eupago_api_key');
     }
 
     public function createMultibancoReference($id, $amount, $additionalParams = [])

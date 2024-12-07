@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\GlobalSettingsHelper;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Brevo\Client\Configuration;
@@ -12,7 +13,7 @@ trait BrevoTrait
 
     public function prepareBrevoApiCredencials()
     {
-        $this->brevoApiKey = env('BREVO_API_KEY');
+        $this->brevoApiKey = GlobalSettingsHelper::get('brevo_api_key');
     }
 
     public function addContactInList($listId, $contact)

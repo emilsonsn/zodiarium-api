@@ -40,7 +40,7 @@
         </div>
         <h1>Pagamento Cancelado</h1>
         <p>Parece que você cancelou o pagamento. Não perca a oportunidade de garantir seus relatórios personalizados!</p>
-        <a href="{{ env('FRONT_URL') }}" class="btn btn-primary">Tentar Novamente</a>
+        <a href="{{ "https://zodiarium.com" }}" class="btn btn-primary">Tentar Novamente</a>
     </div>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>

@@ -100,6 +100,9 @@ class ClientService
 
             $data = $validator->validated();
 
+            $data['hour_birth'] = $data['hour_birth'] ? $data['hour_birth'] : '00';
+            $data['minute_birth'] = $data['minute_birth'] ? $data['minute_birth'] : '00';
+
             $client = Client::updateOrCreate([
                 'email' => $data['email'],
             ],$data);
@@ -123,7 +126,7 @@ class ClientService
 
             $chartResponse = $this->getNatalChart($data);
 
-            if ($chartResponse['success'] !== 1) throw new Exception('Erro na API ao gerar Gráfico');
+            if ($chartResponse['success'] !== 1) throw new Exception($chartResponse['message'] ?? 'Erro na API ao gerar Gráfico');
 
             $client['singChartBs4'] = $chartResponse['data']['base64_image'];
 

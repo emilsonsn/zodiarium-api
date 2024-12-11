@@ -125,22 +125,36 @@ class SaleService
         }
     }
 
-    public function veriryPayment($sale_id)
+    public function verifyPayment($sale_id)
     {
         try {
-
             $payment = Payment::where('sale_id', $sale_id)
                 ->first();
-        
-            $result = $this->checkPaymentStatus($payment->reference, $payment->entity);
 
-            if(isset($result['estado']) && $result['estado'] == 'paga'){
-                $payment->update([
-                    'status' => PaymentStatus::Successful->value
-                ]);
+            $paid = false;
+
+            if($payment->status === PaymentStatus::Successful){
+                $paid = true;
+            }else{
+                switch($payment->origin_api){
+                    case 'Eupago':
+                        $response = $this->checkPaymentStatus($payment->reference, $payment->entity);
+                        if (($response['estado_referencia'] ?? null) === 'paga') {
+                            $paid = true;
+                        }
+                        break;
+                    case 'Stripe':
+                        $response = $this->getCheckoutSession($payment->reference);
+                        if (($response->payment_status ?? null) === 'paid'){
+                            $paid = true;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
             
-            return ['status' => true, 'data' => $payment];
+            return ['status' => true, 'data' => ['paid' => $paid]];
         } catch (Exception $error) {
             DB::rollBack();
             return ['status' => false, 'error' => $error->getMessage(), 'statusCode' => 400];

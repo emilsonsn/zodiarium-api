@@ -41,7 +41,12 @@ Route::prefix('product')->group(function(){
 
 Route::prefix('sale')->group(function(){
     Route::get('search', [SaleController::class, 'search']);
+    Route::get('verify-payment/{id}', [SaleController::class, 'verifyPayment']);
     Route::post('create', [SaleController::class, 'create']);
+});
+
+Route::prefix('setting')->group(function(){
+    Route::get('/', [SettingController::class, 'search']);   
 });
 
 Route::post('logout', [AuthController::class, 'logout']);
@@ -81,7 +86,6 @@ Route::middleware('jwt')->group(function(){
     });
 
     Route::prefix('setting')->group(function(){
-        Route::get('/', [SettingController::class, 'search']);        
         Route::patch('/', [SettingController::class, 'update']);        
     });
 });

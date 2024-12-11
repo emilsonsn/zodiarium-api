@@ -26,6 +26,7 @@ class Setting extends Model
         'footer_text',
         'api_key',
         'bearer_token',
+        'tags'
     ];
 
     public function getLogoAttribute($value){

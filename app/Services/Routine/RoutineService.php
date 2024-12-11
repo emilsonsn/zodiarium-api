@@ -57,9 +57,9 @@ class RoutineService
     }
 
     public function successfulPaymentProcess(Payment $payment){
-        // $payment->update([
-        //     'status' => PaymentStatus::Successful->value
-        // ]);
+        $payment->update([
+            'status' => PaymentStatus::Successful->value
+        ]);
 
         $sale = Sale::find($payment->sale_id)->update([
             'status' => SaleStatus::Finished->value

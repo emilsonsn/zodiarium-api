@@ -34,6 +34,7 @@ class SettingService
                 'footer_text' => ['required', 'string', 'max:255'],
                 'api_key' => ['required', 'string'],
                 'bearer_token' => ['required', 'string'],
+                'tags'=> ['nullable', 'string']
             ];
 
             $validator = Validator::make($request->all(), $rules);

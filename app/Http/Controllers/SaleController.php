@@ -32,6 +32,13 @@ class SaleController extends Controller
         return $this->response($result);
     }
 
+    public function verifyPayment($id){
+        $result = $this->saleService->verifyPayment($id);
+
+        if($result['status']) $result['message'] = "Pagamento verificado";
+        return $this->response($result);
+    }    
+
     private function response($result){
         return response()->json([
             'status' => $result['status'],

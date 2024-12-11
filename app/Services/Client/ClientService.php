@@ -11,6 +11,7 @@ use App\Traits\DivineAPITrait;
 use Exception;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class ClientService
 {
@@ -126,12 +127,24 @@ class ClientService
 
             $chartResponse = $this->getNatalChart($data);
 
+            $sunText = $this->getPlanetText($data, 'sun');
+
+            $moonText = $this->getPlanetText($data, 'moon');
+
+            $sunText = $this->translateToPortuguese($sunText['data']['report']);
+            $moonText = $this->translateToPortuguese($moonText['data']['report']);
+
             if ($chartResponse['success'] !== 1) throw new Exception($chartResponse['message'] ?? 'Erro na API ao gerar Gráfico');
 
             $client['singChartBs4'] = $chartResponse['data']['base64_image'];
 
             $client['zodiacSign'] = $this->getZodiacSign($client->day_birth, $client->month_birth);
             $client['zodiacSignDetail'] = $this->getZodiacDetails($client['zodiacSign']);
+            $client['sunText'] = $sunText;
+            $client['moonText'] = $moonText;
+            $client['mission'] = $this->getSignText('mission');
+            $client['luck'] = $this->getSignText('luck');
+            $client['relationships'] = $this->getSignText('relationships');
 
             $this->addContactInList(BrevoListEnum::Lead->value, $client);
 
@@ -341,4 +354,47 @@ class ClientService
             ];
         }
     }    
+
+    private function translateToPortuguese(string $text): string
+    {
+        try {
+            $translator = new GoogleTranslate('pt'); // Define o idioma de destino como português
+            $translator->setSource('en'); // Define o idioma de origem como inglês
+            return $translator->translate($text);
+        } catch (\Exception $e) {
+            return 'Erro ao traduzir: ' . $e->getMessage();
+        }
+    }
+
+    private function getSignText(string $type): string
+    {
+        $texts = [
+            'mission' => "Carrega consigo uma energia única, que influencia as suas escolhas e orienta os caminhos que percorre. A sua missão está intimamente ligada ao desenvolvimento pessoal e ao impacto que pode causar à sua volta. A vida coloca constantemente desafios no seu percurso, não como obstáculos, mas como lições desenhadas para o seu crescimento.
+
+    Sente dentro de si uma vontade de fazer mais, de ser mais, e de encontrar um propósito maior que vá além das necessidades do quotidiano. Essa inquietação é um sinal de que está destinado a algo especial. A sua jornada envolve o equilíbrio entre os seus desejos pessoais e as contribuições que faz ao mundo.
+
+    Talvez já tenha percebido que ajudar outras pessoas, partilhar conhecimento ou simplesmente inspirar quem está ao seu redor são partes fundamentais da sua missão. Mesmo nos momentos de dúvida, lembre-se de que cada passo, por menor que pareça, está alinhado com o propósito que a sua alma escolheu antes de estar aqui.
+
+    A sua missão de vida não é um destino fixo, mas um processo contínuo. Confie no seu potencial e esteja aberto às transformações que o universo lhe apresenta. O seu brilho único ilumina o caminho para si e para aqueles que têm a sorte de cruzar a sua jornada.",
+            'luck' => "A sorte é um elemento intrigante na sua vida, muitas vezes parecendo surgir de forma inesperada, como um presente do universo. No entanto, é importante lembrar que a sorte não é apenas fruto do acaso, mas também uma combinação da sua atitude, das escolhas que faz e das oportunidades que decide agarrar.
+
+    Na sua jornada, existem momentos em que tudo parece alinhar-se de forma mágica, como se o destino conspirasse a seu favor. Esses momentos não são meras coincidências; são o reflexo da sua preparação, da sua resiliência e da energia que emana para o mundo. Quanto mais acreditar no seu valor e estiver disposto a arriscar, mais portas se abrirão para si.
+
+    Mesmo nos períodos em que a sorte parecer distante, lembre-se de que ela muitas vezes se manifesta de formas subtis, preparando o terreno para algo maior. Pequenos sinais, encontros inesperados ou até contratempos podem ser parte de um plano maior que o conduz a novas oportunidades.
+
+    Confie que a sua sorte está sempre em movimento, aguardando o momento certo para se revelar. Cultive uma mente aberta e otimista, pois a sorte tem uma forma especial de sorrir para quem acredita no seu potencial e segue em frente com coragem e determinação.",
+            'relationships' => "Os relacionamentos são uma parte essencial da vida, moldando quem somos e ajudando-nos a crescer de maneiras inesperadas. Seja numa relação amorosa, familiar ou de amizade, cada conexão traz consigo aprendizagens, desafios e momentos de profunda partilha.
+
+    Talvez já tenha sentido que, por vezes, a comunicação parece ser um obstáculo ou que as suas expectativas nem sempre são correspondidas. Estes momentos não devem ser vistos como falhas, mas como oportunidades para fortalecer os laços e compreender melhor a dinâmica entre si e a outra pessoa.
+
+    Um relacionamento saudável baseia-se no equilíbrio — entre dar e receber, entre escutar e ser ouvido, e entre respeitar os limites do outro e expressar as suas próprias necessidades. Não há conexões perfeitas, mas há aquelas que valem a pena cultivar e cuidar, mesmo perante dificuldades.
+
+    Lembre-se de que o amor, em qualquer forma, é um caminho de construção mútua. O seu papel num relacionamento não é apenas encontrar alguém que o complemente, mas também alguém com quem possa criar algo maior, baseado em confiança, respeito e partilha.
+
+    Acredite no seu valor e na sua capacidade de amar e ser amado. Mesmo nas fases mais desafiantes, cada passo no caminho dos relacionamentos traz-lhe mais perto de uma conexão que enriqueça verdadeiramente a sua vida."
+        ];
+
+        return $texts[$type] ?? "Texto não encontrado para o tipo especificado.";
+    }
+
 }

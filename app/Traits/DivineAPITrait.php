@@ -51,6 +51,32 @@ trait DivineAPITrait
         }
     }
 
+    public function getPlanetText($data, $planet)
+    {
+        try {
+            $this->prepareDivineAPICredencials();
+            $client = new Client();
+
+            $response = $client->post("$this->baseUrlWesternApi/general-house-report/$planet", [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->bearerTokenWesternApi,
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => array_merge($data, [
+                    'api_key' => $this->apiKeyWesternApi,
+                ]),
+            ]);
+
+            return json_decode($response->getBody()->getContents(), true);
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage(),
+            ];
+        }
+    }
+
     public function getFinancialReport($data)
     {
         try {

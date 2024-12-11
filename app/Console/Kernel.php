@@ -16,6 +16,9 @@ class Kernel extends ConsoleKernel
             ->everyTwoMinutes()
             ->withoutOverlapping(5)
             ->onOneServer();
+
+        $schedule->command('app:cache-clear')->hourly();
+
     }
     
     /**

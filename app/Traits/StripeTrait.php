@@ -34,7 +34,7 @@ trait StripeTrait
                 'quantity' => 1,
             ]],
             'mode' => 'payment',
-            'success_url' => url('/stripe/success'),
+            'success_url' => 'https://zodiarium.com/success',
             'cancel_url' => url('/stripe/cancel'),
         ]);
 

@@ -80,9 +80,9 @@
             text-decoration: none;
         }
 
-        .btnReport{
+        a.btnReport{
             background: #029132;
-            color: white;
+            color: white !important;
             text-decoration: none;
             padding: 8px;
             border-radius: 12px;
@@ -94,7 +94,7 @@
 <body>
     <div class="email-container">
         <div class="header">
-            {{-- <img src="{{ asset('images/astrology-logo.png') }}" alt="Astrology Logo"> --}}
+            <img src="{{ asset('images/astrology-logo.png') }}" alt="Astrology Logo">
             <h1>Seus Relatórios</h1>
         </div>
         <div class="content">

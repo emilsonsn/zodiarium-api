@@ -44,8 +44,8 @@ class ReportService
             foreach($reports as $report){
                 $data['report_code'] = $report;
                 // Retirar
-                $data['report_code'] = 'CAREER-REPORT';
-                $data['logo_url'] = 'https://www.imagenspng.com.br/wp-content/uploads/2019/03/baby-shark-png-02-600x600.png';
+                // $data['report_code'] = 'FINANCIAL-REPORT';
+                // $data['logo_url'] = 'https://zodiarium.com:3000/storage/settings/i3C0gY6q1R1kXPGILhDPhDSFHxrf3ZwVGcRs24Sw.png';
                 //
                 $response = $this->getFinancialReport($data);
 

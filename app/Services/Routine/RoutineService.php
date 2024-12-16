@@ -57,15 +57,11 @@ class RoutineService
     }
 
     public function successfulPaymentProcess(Payment $payment){
-        $payment->update([
-            'status' => PaymentStatus::Successful->value
-        ]);
+        $customer = $payment->sale->client;
 
         $sale = Sale::find($payment->sale_id)->update([
             'status' => SaleStatus::Finished->value
         ]);
-
-        $customer = $payment->sale->client;
 
         $report_ids = collect($payment->sale->products)
             ->map(fn($saleProduct) => $saleProduct->product->report)
@@ -81,6 +77,10 @@ class RoutineService
             Log::error($error);
             return;
         }
+
+        $payment->update([
+            'status' => PaymentStatus::Successful->value
+        ]);
 
         $reports = array_map(function($report) {
             return str_replace('/app/public', '', $report);

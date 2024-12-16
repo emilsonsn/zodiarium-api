@@ -76,7 +76,9 @@ class RoutineService
         $reports = $this->reportService->generateReport($customer['id'], $report_ids);
 
         if(!isset($reports['status']) || !$reports['status']){
+            $error = json_encode($reports);
             Log::error("Erro ao gerar relatórios para o cliente {$customer->name}");
+            Log::error($error);
             return;
         }
 

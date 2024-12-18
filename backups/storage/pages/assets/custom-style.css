@@ -1,0 +1,59 @@
+
+body{
+    background-image: url('https://static.vecteezy.com/ti/vetor-gratis/p1/7938205-celeste-astrologico-fundo-com-constelacoes-estrelas-sol-e-lua-mistico-astrologia-espaco-celeste-com-sinais-dourados-ilustracaoial-vetor.jpg') !important;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    width: 100vw;
+  }
+
+  cabeça{
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    width: 100vw;
+  }
+  
+#myTabContent{
+  background: white !important;
+  width: 100% !important;
+  max-width: 750px;
+  height: 100vh;
+  margin: 0 auto;
+}
+
+
+span > img{
+  width: 50px !important;
+}
+
+span img{
+  width: 100px;
+}
+
+.header_div{
+    background-color: #597FA3 !important;
+}
+
+.report_name.report_name_three{
+    font-size: 3rem;
+}
+
+.report_name{
+  font-size: 3rem !important;
+}
+
+.report_for{
+  margin-top: 30px;
+}
+  
+
+@media print {
+  body {
+      visibility: visible;
+  }
+  .tab-content {
+      display: block;
+  }
+}

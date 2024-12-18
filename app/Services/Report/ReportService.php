@@ -42,12 +42,12 @@ class ReportService
             ];
             $generatedReports = [];
 
+            Log::info("Relatórios: " . json_encode($reports));
+            
             foreach($reports as $report){
                 $data['report_code'] = $report;
-                // Retirar
-                // $data['report_code'] = 'FINANCIAL-REPORT';
-                // $data['logo_url'] = 'https://zodiarium.com:3000/storage/settings/i3C0gY6q1R1kXPGILhDPhDSFHxrf3ZwVGcRs24Sw.png';
                 Log::info("Iniciando geração de relatório $report");
+                Log::info('Data: ' . json_encode($data));
                 $response = $this->getFinancialReport($data);
 
                 if ($response['success'] !== 1) {

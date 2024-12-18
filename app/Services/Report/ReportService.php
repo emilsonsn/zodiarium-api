@@ -123,7 +123,8 @@ class ReportService
             }
             $translatedHtml = implode('', $translatedChunks);
         } else {
-            $translatedHtml = mb_convert_encoding($translator->translate($protectedHtml), 'UTF-8', 'auto');
+            $translatedHtml = $translator->translate($protectedHtml);
+            $translatedHtml = mb_convert_encoding($translatedHtml, 'UTF-8', 'auto');
         }
         
         $finalHtml = preg_replace_callback(

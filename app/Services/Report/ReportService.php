@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Setting;
 use Exception;
 use App\Traits\DivineAPITrait;
+use Illuminate\Support\Facades\Log;
 
 class ReportService
 {
@@ -46,10 +47,13 @@ class ReportService
                 // Retirar
                 // $data['report_code'] = 'FINANCIAL-REPORT';
                 // $data['logo_url'] = 'https://zodiarium.com:3000/storage/settings/i3C0gY6q1R1kXPGILhDPhDSFHxrf3ZwVGcRs24Sw.png';
-                //
+                Log::info("Iniciando geração de relatório $report");
                 $response = $this->getFinancialReport($data);
 
-                if ($response['success'] !== 1) throw new Exception('Erro na API ao gerar relatório');                
+                if ($response['success'] !== 1) {
+                    $error = json_encode($response);
+                    throw new Exception("Erro na API ao gerar relatório. error: $error");
+                }
             
                 $reportUrl = $response['data']['report_url'];            
     

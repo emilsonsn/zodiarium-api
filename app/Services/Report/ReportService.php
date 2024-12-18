@@ -43,7 +43,7 @@ class ReportService
             $generatedReports = [];
 
             Log::info("Relatórios: " . json_encode($reports));
-            
+
             foreach($reports as $report){
                 $data['report_code'] = $report;
                 Log::info("Iniciando geração de relatório $report");
@@ -90,6 +90,8 @@ class ReportService
             throw new \Exception('Erro ao ler o arquivo HTML.');
         }
 
+        $html = mb_convert_encoding($html, 'UTF-8', 'auto');
+
         $preservedValues = [];
         $protectedHtml = preg_replace_callback(
             '/<([^>]+)>/',
@@ -121,7 +123,7 @@ class ReportService
             }
             $translatedHtml = implode('', $translatedChunks);
         } else {
-            $translatedHtml = $translator->translate($protectedHtml);
+            $translatedHtml = mb_convert_encoding($translator->translate($protectedHtml), 'UTF-8', 'auto');
         }
         
         $finalHtml = preg_replace_callback(
@@ -146,7 +148,7 @@ class ReportService
         $finalHtml = str_replace('<cabeça>', '<head>', $finalHtml);
         
         $newFilePath = str_replace('.html', '_translated.html', $filePath);
-        file_put_contents($newFilePath, $finalHtml);
+        file_put_contents($newFilePath, $finalHtml, LOCK_EX);
         
         return $newFilePath;
     }

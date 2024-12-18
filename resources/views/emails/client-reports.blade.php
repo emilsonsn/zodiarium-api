@@ -94,7 +94,7 @@
 <body>
     <div class="email-container">
         <div class="header">
-            <img src="{{ asset('images/astrology-logo.png') }}" alt="Astrology Logo">
+            <img src="{{ $logoUrl ?? '' }}" alt="Astrology Logo">
             <h1>Seus Relatórios</h1>
         </div>
         <div class="content">

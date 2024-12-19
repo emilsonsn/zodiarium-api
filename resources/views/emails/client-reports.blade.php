@@ -31,7 +31,7 @@
             padding: 20px;
         }
         .header img {
-            max-width: 100px;
+            max-width: 150px;
             margin-bottom: 10px;
         }
         .header h1 {
@@ -99,7 +99,7 @@
         </div>
         <div class="content">
             <h2>Olá, {{ $customerName }}!</h2>
-            <p>Agradecemos por sua compra! Aqui estão os relatórios de astrologia que você adquiriu:</p>
+            <p>Agradecemos por sua compra! Aqui estão os relatórios que você adquiriu:</p>
             <div class="report-list">
                 @foreach ($reports as $report)
                     <div class="report-item">

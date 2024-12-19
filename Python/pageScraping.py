@@ -15,6 +15,7 @@ driver = webdriver.Chrome(service=service, options=options)
 
 custom_head = """
 <head>
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="assets/bootstrap.min.css">
     <link rel="stylesheet" href="assets/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/custom-style.css">
@@ -40,7 +41,7 @@ try:
     os.makedirs(output_dir, exist_ok=True)
     file_path = os.path.join(output_dir, filename)
 
-    with open(file_path, 'w') as file:
+    with open(file_path, 'w', encoding='utf-8') as file:
         file.write(final_html)
 
     print(file_path)

@@ -48,7 +48,9 @@ class ReportService
                 $data['report_code'] = $report;
                 Log::info("Iniciando geração de relatório $report");
                 Log::info('Data: ' . json_encode($data));
-                $response = $this->getFinancialReport($data);
+                $response = $this->getFinancialReport($data);                
+
+                Log::info('Report response: ' . json_encode($response));
 
                 if ($response['success'] !== 1) {
                     $error = json_encode($response);

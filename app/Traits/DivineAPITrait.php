@@ -25,9 +25,9 @@ trait DivineAPITrait
         $this->baseUrl = 'https://pdf.divineapi.com/astrology/v1/report';        
         $this->bearerToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FzdHJvYXBpLTEuZGl2aW5lYXBpLmNvbS9hcGkvYXV0aC1hcGktdXNlciIsImlhdCI6MTczMjk4MDg1MCwibmJmIjoxNzMyOTgwODUwLCJqdGkiOiJ2dnNoYVNCQnRDbDVCMVc3Iiwic3ViIjoiMjk5MyIsInBydiI6ImU2ZTY0YmIwYjYxMjZkNzNjNmI5N2FmYzNiNDY0ZDk4NWY0NmM5ZDcifQ.kkg3hVXHyIOdB88Tw6IBHWsQyULL1C45W5nLjetLQrA';        
 
-        $this->apiKeyWesternApi = '49d437de9f731901a8172943edd6b74d';
+        $this->apiKeyWesternApi = 'e4ca12b327fb9c2dccb9ac6ea08b8314';
         $this->baseUrlWesternApi = 'https://astroapi-4.divineapi.com/western-api/v1';
-        $this->bearerTokenWesternApi = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FzdHJvYXBpLTEuZGl2aW5lYXBpLmNvbS9hcGkvYXV0aC1hcGktdXNlciIsImlhdCI6MTczNDAzNjMwMiwibmJmIjoxNzM0MDM2MzAyLCJqdGkiOiJrajJUTUwySkEzQXk0TGhtIiwic3ViIjoiMzA3NCIsInBydiI6ImU2ZTY0YmIwYjYxMjZkNzNjNmI5N2FmYzNiNDY0ZDk4NWY0NmM5ZDcifQ.jnLkGrZCDYJfRrZvmb0syXu9JIq0HXE8Ve35FyXiyiU';
+        $this->bearerTokenWesternApi = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZGl2aW5lYXBpLmNvbS9zaWdudXAiLCJpYXQiOjE3MzQ3MTgyNjMsIm5iZiI6MTczNDcxODI2MywianRpIjoiV3pkYWdQWkk0T2JuTzNlbCIsInN1YiI6IjMwOTYiLCJwcnYiOiJlNmU2NGJiMGI2MTI2ZDczYzZiOTdhZmMzYjQ2NGQ5ODVmNDZjOWQ3In0._fr5nt1Xuu93-IseUCBLs8yb2jpJBd-_bzb2KUbBi6o';
     }
 
     public function getNatalChart($data)

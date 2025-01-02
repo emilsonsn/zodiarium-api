@@ -44,6 +44,13 @@ class ClientController extends Controller
         return $this->response($result);
     }
 
+    public function generate(Request $request){
+        $result = $this->clientService->generateReportImmediately($request);
+
+        if($result['status']) $result['message'] = "Relatório gerado com sucesso";
+        return $this->response($result);
+    }
+
     public function update(Request $request, $id){
         $result = $this->clientService->update($request, $id);
 

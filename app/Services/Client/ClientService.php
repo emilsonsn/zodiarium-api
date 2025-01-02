@@ -3,11 +3,17 @@
 namespace App\Services\Client;
 
 use App\Enums\BrevoListEnum;
+use App\Enums\PaymentStatus;
+use App\Enums\SaleStatus;
 use App\Exports\ClientsExport;
 use App\Models\City;
 use App\Models\Client;
+use App\Models\Payment;
+use App\Models\Sale;
+use App\Models\SaleProduct;
 use App\Traits\BrevoTrait;
 use App\Traits\DivineAPITrait;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -147,6 +153,67 @@ class ClientService
             $client['relationships'] = $this->getSignText('relationships');
 
             $this->addContactInList(BrevoListEnum::Lead->value, $client);
+
+            return ['status' => true, 'data' => $client];
+        } catch (Exception $error) {
+            return ['status' => false, 'error' => $error->getMessage(), 'statusCode' => 400];
+        }
+    }
+
+    public function generateReportImmediately($request)
+    {
+        try {
+            $rules = [
+                'name' => 'required|string|max:255',
+                'gender' => 'required|string|max:10',
+                'address' => 'required|string',
+                'birth' => 'required|string',
+                'email' => 'nullable|string|email|max:255',
+                'whatsapp' => 'nullable|string|max:20',
+                'reports' => 'required|array',
+            ];
+
+            $data = $request->all();
+
+            $validator = Validator::make($data, $rules);
+
+            if ($validator->fails()) throw new Exception($validator->errors(), 400);
+            
+            $birth = Carbon::parse(str_replace('T', ' ',$data['birth']));
+
+            $data['day_birth'] = $birth->day;
+            $data['month_birth'] = $birth->month;
+            $data['year_birth'] = $birth->year;
+            $data['hour_birth'] = $birth->hour;
+            $data['minute_birth'] = $birth->minute;
+
+            $client = Client::updateOrCreate([
+                'email' => $data['email'],
+            ],$data);
+
+            $this->addContactInList(BrevoListEnum::Lead->value, $client);
+
+            $sale = Sale::create([
+               'client_id' => $client->id,
+               'status' => SaleStatus::Pending->value,
+            ]);
+
+            foreach($data['reports'] as $report){
+                SaleProduct::create([
+                    'sale_id' => $sale->id,
+                    'product_id' => $report
+                ]);
+            }
+
+            Payment::create([
+                'sale_id' => $sale->id,
+                'status' => PaymentStatus::Pending,
+                'reference' => '---',
+                'entity' => '---',
+                'origin_api' => 'Zodiarium',
+                'alias' => '',
+                'value' => 0,
+            ]);
 
             return ['status' => true, 'data' => $client];
         } catch (Exception $error) {

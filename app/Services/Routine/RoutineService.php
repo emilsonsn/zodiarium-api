@@ -46,6 +46,8 @@ class RoutineService
                             $this->successfulPaymentProcess($payment);
                         }
                         break;
+                    case 'Zodiarium':
+                        $this->successfulPaymentProcess($payment);
                     default:
                         break;
                 }

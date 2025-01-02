@@ -81,6 +81,7 @@ Route::middleware('jwt')->group(function(){
     Route::prefix('client')->group(function(){
         Route::get('search', [ClientController::class, 'search']);
         Route::get('export', [ClientController::class, 'export']);
+        Route::post('generate', [ClientController::class, 'generate']);        
         Route::patch('{id}', [ClientController::class, 'update']);
         Route::delete('{id}', [ClientController::class, 'delete']);
     });

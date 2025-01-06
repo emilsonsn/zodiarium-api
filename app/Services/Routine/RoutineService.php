@@ -65,6 +65,10 @@ class RoutineService
             'status' => SaleStatus::Finished->value
         ]);
 
+        $payment->update([
+            'status' => PaymentStatus::Successful->value
+        ]);
+
         $report_ids = collect($payment->sale->products)
             ->map(fn($saleProduct) => $saleProduct->product->report)
             ->toArray();
@@ -79,10 +83,6 @@ class RoutineService
             Log::error($error);
             return;
         }
-
-        $payment->update([
-            'status' => PaymentStatus::Successful->value
-        ]);
 
         $reports = array_map(function($report) {
             return str_replace('/app/public', '', $report);

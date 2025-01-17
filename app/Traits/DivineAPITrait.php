@@ -17,13 +17,13 @@ trait DivineAPITrait
 
     public function prepareDivineAPICredencials(){
         // Api Key Prod:
-        $this->apiKey = '49f8c64822e567df1650eb82f3d09f56';
+        // $this->apiKey = '49f8c64822e567df1650eb82f3d09f56';
 
         // Api Key Test:
-        // $this->apiKey = '5c1634ff878b14073aeefddca74e2746';
+        $this->apiKey = '5c1634ff878b14073aeefddca74e2746';
         
         $this->baseUrl = 'https://pdf.divineapi.com/astrology/v1/report';        
-        $this->bearerToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FzdHJvYXBpLTEuZGl2aW5lYXBpLmNvbS9hcGkvYXV0aC1hcGktdXNlciIsImlhdCI6MTczMjk4MDg1MCwibmJmIjoxNzMyOTgwODUwLCJqdGkiOiJ2dnNoYVNCQnRDbDVCMVc3Iiwic3ViIjoiMjk5MyIsInBydiI6ImU2ZTY0YmIwYjYxMjZkNzNjNmI5N2FmYzNiNDY0ZDk4NWY0NmM5ZDcifQ.kkg3hVXHyIOdB88Tw6IBHWsQyULL1C45W5nLjetLQrA';        
+        $this->bearerToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FzdHJvYXBpLTEuZGl2aW5lYXBpLmNvbS9hcGkvYXV0aC1hcGktdXNlciIsImlhdCI6MTczMjk4MDg1MCwibmJmIjoxNzMyOTgwODUwLCJqdGkiOiJ2dnNoYVNCQnRDbDVCMVc3Iiwic3ViIjoiMjk5MyIsInBydiI6ImU2ZTY0YmIwYjYxMjZkNzNjNmI5N2FmYzNiNDY0ZDk4NWY0NmM5ZDcifQ.kkg3hVXHyIOdB88Tw6IBHWsQyULL1C45W5nLjetLQrA';
 
         $this->apiKeyWesternApi = 'e4ca12b327fb9c2dccb9ac6ea08b8314';
         $this->baseUrlWesternApi = 'https://astroapi-4.divineapi.com/western-api/v1';

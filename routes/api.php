@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -55,6 +56,10 @@ Route::middleware('jwt')->group(function(){
 
     Route::middleware(AdminMiddleware::class)->group(function() {
         // Middleware do admin
+    });
+
+    Route::prefix('generated')->group(function(){
+        Route::get('search', [ReportController::class, 'getGeneratedReports']);
     });
 
     Route::prefix('user')->group(function(){

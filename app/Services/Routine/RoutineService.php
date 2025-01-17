@@ -6,7 +6,7 @@ use App\Enums\BrevoListEnum;
 use App\Enums\PaymentStatus;
 use App\Enums\SaleStatus;
 use App\Mail\ClientReportMail;
-use App\Models\Genereated;
+use App\Models\Genereted;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Sale;
@@ -100,7 +100,7 @@ class RoutineService
         }
 
         foreach($reportsData as $report){
-            Genereated::create([
+            Genereted::create([
                 'client_id' => $customer->id,
                 'path' => $report['url']
             ]);

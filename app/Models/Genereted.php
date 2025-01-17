@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Genereated extends Model
+class Genereted extends Model
 {
     use HasFactory;
 
@@ -18,6 +18,10 @@ class Genereated extends Model
         'client_id',
         'path'
     ];
+
+    public function getPathAttribute($value){
+        return $value ?  asset($value) : null;
+    }
 
     public function client(){
         return $this->belongsTo(Client::class);

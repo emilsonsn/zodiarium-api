@@ -3,6 +3,7 @@
 namespace App\Services\Report;
 
 use App\Models\Client;
+use App\Models\Genereted;
 use App\Models\Setting;
 use Exception;
 use App\Traits\DivineAPITrait;
@@ -11,6 +12,25 @@ use Illuminate\Support\Facades\Log;
 class ReportService
 {
     use DivineAPITrait;
+
+    public function getGeneratedReports(){
+        try{
+            $genereteds = Genereted::with('client')
+                ->orderBy('id', 'desc')
+                ->get();
+
+            return [
+                'status' => true, 
+                'data' => $genereteds
+            ];
+
+        }catch(Exception $error ){
+            return [
+                'status' => true,
+                'data'   => $error->getMessage()
+            ];
+        }
+    }
 
     public function generateReport($id, $reports){
         try{

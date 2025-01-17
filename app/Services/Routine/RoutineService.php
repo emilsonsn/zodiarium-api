@@ -6,6 +6,7 @@ use App\Enums\BrevoListEnum;
 use App\Enums\PaymentStatus;
 use App\Enums\SaleStatus;
 use App\Mail\ClientReportMail;
+use App\Models\Genereated;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Sale;
@@ -96,6 +97,13 @@ class RoutineService
                 'title' => $product->title,
                 'url'   => $reports[$indice]
             ];
+        }
+
+        foreach($reportsData as $report){
+            Genereated::create([
+                'client_id' => $customer->id,
+                'path' => $report['url']
+            ]);
         }
 
         Mail::to($customer->email)->send(new ClientReportMail($customer->name, $reportsData));

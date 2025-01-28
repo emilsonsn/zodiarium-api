@@ -135,7 +135,7 @@ class ReportService
             $html
         );
         
-        $translator = new \Stichoza\GoogleTranslate\GoogleTranslate('pt-PT');
+        $translator = new \Stichoza\GoogleTranslate\GoogleTranslate('pt');
         
         if (mb_strlen($protectedHtml) > 5000) {
             $chunks = str_split($protectedHtml, 5000);

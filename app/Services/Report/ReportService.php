@@ -152,6 +152,7 @@ class ReportService
         $finalHtml = preg_replace_callback(
             '/(class|id|src|href|alt|title|styles)="([^"]*)"/i',
             function ($attributeMatches) use (&$preservedValues) {
+                $attributeMatches[2] = str_replace(' ', '', $attributeMatches[2]);
                 $decodedValue = base64_decode($attributeMatches[2], true);
                 if ($decodedValue !== false) {
                     return $attributeMatches[1] . '="' . $decodedValue . '"';
@@ -169,6 +170,7 @@ class ReportService
         $finalHtml = str_replace('fade', '', $finalHtml);
         $finalHtml = str_replace('folha de estilo', 'stylesheet', $finalHtml);
         $finalHtml = str_replace('<cabeça>', '<head>', $finalHtml);
+        $finalHtml = str_replace('Stylesheet', 'stylesheet', $finalHtml);
         
         $newFilePath = str_replace('.html', '_translated.html', $filePath);
         file_put_contents($newFilePath, $finalHtml, LOCK_EX);

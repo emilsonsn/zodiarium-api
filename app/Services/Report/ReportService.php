@@ -80,7 +80,7 @@ class ReportService
                 $reportUrl = $response['data']['report_url'];            
     
                 $htmlPath = $this->callPythonScript($reportUrl);
-                // $htmlPath = "/home/emilsonsn/desktop/Emilson/Projetos/10 - Outubro/zodiarium/zodiarium-api/storage/app/public/pages/page_1732991362.html";
+                // $htmlPath = "/home/emilsonsn/desktop/Emilson/Projetos/2024/10 - Outubro/zodiarium/zodiarium-api/storage/app/public/pages/page_1738030391.html";                
     
                 $generatedReports[] = $this->translateHtmlTextAndCreateFileTranslated($htmlPath);
             }
@@ -98,7 +98,7 @@ class ReportService
         $output = shell_exec($command);
 
         if (!$output) {
-            throw new \Exception('Erro ao executar o script Python.');
+            throw new Exception('Erro ao executar o script Python.');
         }
 
         return trim($output);
@@ -107,35 +107,31 @@ class ReportService
     private function translateHtmlTextAndCreateFileTranslated(string $filePath): string
     {
         $html = file_get_contents($filePath);
+        $translatedHtml = '';
         
         if (!$html) {
-            throw new \Exception('Erro ao ler o arquivo HTML.');
+            throw new Exception('Erro ao ler o arquivo HTML.');
         }
-
+    
         $html = mb_convert_encoding($html, 'UTF-8', 'auto');
-
+    
         $preservedValues = [];
+        $counter = 1;
+    
         $protectedHtml = preg_replace_callback(
-            '/<([^>]+)>/',
-            function ($matches) use (&$preservedValues) {
-                return preg_replace_callback(
-                    '/(class|id|src|href|alt|title|styles)="([^"]*)"/i',
-                    function ($attributeMatches) use (&$preservedValues) {
-                        if (strpos($attributeMatches[2], 'data:image/svg+xml;base64,') === 0) {
-                            $key = 'PRESERVED_' . count($preservedValues);
-                            $preservedValues[$key] = $attributeMatches[2];
-                            return $attributeMatches[1] . '="' . $key . '"';
-                        }
-
-                        return $attributeMatches[1] . '="' . base64_encode($attributeMatches[2]) . '"';
-                    },
-                    $matches[0]
-                );
+            '/(class|id|src|href|alt|title|style)="([^"]*)"/i',
+            function ($matches) use (&$preservedValues, &$counter) {
+                $placeholder = "{{preservado_$counter}}";
+                $preservedValues[$placeholder] = $matches[2];
+                $counter++;
+                return $matches[1] . '="' . $placeholder . '"';
             },
             $html
         );
-        
-        $translator = new \Stichoza\GoogleTranslate\GoogleTranslate('pt');
+    
+        $translator = new \Stichoza\GoogleTranslate\GoogleTranslate();
+        $translator->setSource('en');
+        $translator->setTarget('pt-PT');
         
         if (mb_strlen($protectedHtml) > 5000) {
             $chunks = str_split($protectedHtml, 5000);
@@ -148,33 +144,24 @@ class ReportService
             $translatedHtml = $translator->translate($protectedHtml);
             $translatedHtml = mb_convert_encoding($translatedHtml, 'UTF-8', 'auto');
         }
-        
-        $finalHtml = preg_replace_callback(
-            '/(class|id|src|href|alt|title|styles)="([^"]*)"/i',
-            function ($attributeMatches) use (&$preservedValues) {
-                $attributeMatches[2] = str_replace(' ', '', $attributeMatches[2]);
-                $decodedValue = base64_decode($attributeMatches[2], true);
-                if ($decodedValue !== false) {
-                    return $attributeMatches[1] . '="' . $decodedValue . '"';
-                }
 
-                if (array_key_exists($attributeMatches[2], $preservedValues)) {
-                    return $attributeMatches[1] . '="' . $preservedValues[$attributeMatches[2]] . '"';
-                }
-                return $attributeMatches[0];
-            },
-            $translatedHtml
-        );
-
-        $finalHtml = str_replace('terceiro', 'o', $finalHtml);
+        foreach ($preservedValues as $placeholder => $originalValue) {
+            $translatedHtml = str_replace($placeholder, $originalValue, $translatedHtml);
+        }
+    
+        $finalHtml = str_replace('terceiro', 'o', $translatedHtml);
         $finalHtml = str_replace('fade', '', $finalHtml);
         $finalHtml = str_replace('folha de estilo', 'stylesheet', $finalHtml);
         $finalHtml = str_replace('<cabeça>', '<head>', $finalHtml);
         $finalHtml = str_replace('Stylesheet', 'stylesheet', $finalHtml);
+        $finalHtml = str_replace('Apresentação', 'presentation', $finalHtml);
+        $finalHtml = str_replace('apresentação', 'presentation', $finalHtml);
+        $finalHtml = str_replace('aia-selected', 'aria-selected', $finalHtml);
+        $finalHtml = str_replace('<ult', '<ul', $finalHtml);
         
         $newFilePath = str_replace('.html', '_translated.html', $filePath);
         file_put_contents($newFilePath, $finalHtml, LOCK_EX);
-        
+    
         return $newFilePath;
     }
 }
